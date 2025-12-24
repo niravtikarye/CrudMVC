@@ -11,7 +11,7 @@
     <h1>Add</h1>
     <div>
         <div>
-            Enter Name <input type="text" id="name" name="name">
+            Enter your Name <input type="text" id="name" name="name">
         </div>
         <div>
             Enter Email <input type="text" id="email" name="email">
