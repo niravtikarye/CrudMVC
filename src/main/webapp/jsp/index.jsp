@@ -17,6 +17,10 @@
 
     <body>
         <h2>This is Hello page</h2>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
+            Doloribus nisi ab ut sunt saepe harum dignissimos, veritatis necessitatibus 
+            vitae! Quos labore nemo assumenda qui officia 
+            necessitatibus consequatur ipsam et aperiam!<p>
         <button onclick="processOperation('add')">Add</button>
         <button onclick="processOperation('view')">View</button>
         <div id="ajax"></div>
