@@ -12,7 +12,7 @@
         https://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <!-- Scan Controllers -->
-    <context:component-scan base-package="com.web.crudmvc"/>
+    <context:component-scan base-package="com.web.CivicSolve"/>
 
     <!-- Enable Spring MVC -->
     <mvc:annotation-driven/>

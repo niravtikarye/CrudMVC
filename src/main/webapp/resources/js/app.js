@@ -19,66 +19,108 @@ function ajaxCall(method, url, data, destination, isHtml) {
     xhttp.send(data);
 }
 
-function processOperation(process) {
-    alert(process);
-    ajaxCall("POST", "user/selectProcess", "process=" + process, "ajax", true);
-}
-// Insert user using AJAX
-function insertUser() {
-    let name = document.getElementById("name").value;
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
-    let mobile = document.getElementById("mobile").value;
-    let address = document.getElementById("address").value;
+//function processOperation(process) {
+//    alert(process);
+//    ajaxCall("POST", "user/selectProcess", "process=" + process, "ajax", true);
+//}
+//// Insert user using AJAX
+//function insertUser() {
+//    let name = document.getElementById("name").value;
+//    let email = document.getElementById("email").value;
+//    let password = document.getElementById("password").value;
+//    let mobile = document.getElementById("mobile").value;
+//    let address = document.getElementById("address").value;
+//
+//    // Prepare POST data for ModelAttribute
+//    let data = 'name=' + encodeURIComponent(name) +
+//            '&email=' + encodeURIComponent(email) +
+//            '&password=' + encodeURIComponent(password) +
+//            '&mobile=' + encodeURIComponent(mobile) +
+//            '&address=' + encodeURIComponent(address);
+//
+//    ajaxCall("POST", "user/save", data, "insertD", true);
+//}
+//
+//function openUpdate(element, selectProcess) {
+//    let id = element.getAttribute("Did");
+//    let data = 'process=' + encodeURIComponent(selectProcess) +
+//        '&userId=' + encodeURIComponent(id);;
+//    ajaxCall("POST", "user/selectProcess", data, "ajax", true);
+//}
+//
+//// Update user
+//function updateUser() {
+//    let userId = document.getElementById("userId").value;
+//    let name = document.getElementById("name").value;
+//    let email = document.getElementById("email").value;
+//    let password = document.getElementById("password").value;
+//    let mobile = document.getElementById("mobile").value;
+//    let address = document.getElementById("address").value;
+//
+//    let data = 'userId=' + encodeURIComponent(userId) +
+//            '&name=' + encodeURIComponent(name) +
+//            '&email=' + encodeURIComponent(email) +
+//            '&password=' + encodeURIComponent(password) +
+//            '&mobile=' + encodeURIComponent(mobile) +
+//            '&address=' + encodeURIComponent(address);
+//
+//    ajaxCall("POST", "user/update", data, "updateD", true);
+//}
+//
+//// Delete user
+//function deleteUser(element) {
+//    let con = confirm("Are you sure you want to delete this user?");
+//    if (con) {
+//        let id = element.getAttribute("Did");
+//        let data = 'userId=' + encodeURIComponent(id);
+//
+//        ajaxCall("POST", "user/delete", data, "delteRow", true);
+//
+//        if (document.getElementById("delteRow").innerHTML.trim() === "1") {
+//            alert("Deleted Successfully");
+//            processOperation("view"); // reload table
+//        }
+//    }
+//}
 
-    // Prepare POST data for ModelAttribute
-    let data = 'name=' + encodeURIComponent(name) +
-            '&email=' + encodeURIComponent(email) +
-            '&password=' + encodeURIComponent(password) +
-            '&mobile=' + encodeURIComponent(mobile) +
-            '&address=' + encodeURIComponent(address);
+    const userTypeRadios = document.querySelectorAll('input[name="userType"]');
+    const solverDiv = document.getElementById('solverType');
+    const form = document.getElementById('regForm');
 
-    ajaxCall("POST", "user/save", data, "insertD", true);
-}
+    // Show/Hide solver type
+    userTypeRadios.forEach(r => {
+        r.addEventListener('change', () => {
+            if (r.value === "solver" && r.checked) {
+                solverDiv.style.display = "flex";
+                document.querySelectorAll('input[name="solver"]').forEach(s => s.required = true);
+            } else if (r.value === "user" && r.checked) {
+                solverDiv.style.display = "none";
+                document.querySelectorAll('input[name="solver"]').forEach(s => s.required = false);
+            }
+        });
+    });
 
-function openUpdate(element, selectProcess) {
-    let id = element.getAttribute("Did");
-    let data = 'process=' + encodeURIComponent(selectProcess) +
-        '&userId=' + encodeURIComponent(id);;
-    ajaxCall("POST", "user/selectProcess", data, "ajax", true);
-}
+    // Password match validation
+    form.addEventListener('submit', function(e) {
+        const pass = document.getElementById('pass').value;
+        const confirm = document.getElementById('confirmPass').value;
 
-// Update user
-function updateUser() {
-    let userId = document.getElementById("userId").value;
-    let name = document.getElementById("name").value;
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
-    let mobile = document.getElementById("mobile").value;
-    let address = document.getElementById("address").value;
-
-    let data = 'userId=' + encodeURIComponent(userId) +
-            '&name=' + encodeURIComponent(name) +
-            '&email=' + encodeURIComponent(email) +
-            '&password=' + encodeURIComponent(password) +
-            '&mobile=' + encodeURIComponent(mobile) +
-            '&address=' + encodeURIComponent(address);
-
-    ajaxCall("POST", "user/update", data, "updateD", true);
-}
-
-// Delete user
-function deleteUser(element) {
-    let con = confirm("Are you sure you want to delete this user?");
-    if (con) {
-        let id = element.getAttribute("Did");
-        let data = 'userId=' + encodeURIComponent(id);
-
-        ajaxCall("POST", "user/delete", data, "delteRow", true);
-
-        if (document.getElementById("delteRow").innerHTML.trim() === "1") {
-            alert("Deleted Successfully");
-            processOperation("view"); // reload table
+        if (pass !== confirm) {
+            alert("Passwords do not match");
+            e.preventDefault();
         }
+    });
+    
+    function goToRegeistration() {
+//    let con = confirm("Are you sure you want to delete this user?");
+//    if (con) {
+//        let id = element.getAttribute("Did");
+////        let data = 'userId=' + encodeURIComponent(id);
+
+        ajaxCall("POST", "Solve/Registration",null , "mainPage", true);
+
     }
-}
+    
+    function goToLoginPage(){
+        window.location.href = 'http://localhost:8080/CrudMVC/';
+    }
