@@ -20,8 +20,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class UserRepo {
-       
- @Autowired
+
+    @Autowired
     private NamedParameterJdbcTemplate jdbc;
 
     // ================= VIEW =================
@@ -33,15 +33,28 @@ public class UserRepo {
 
         return jdbc.queryForList(query.toString(), new MapSqlParameterSource());
     }
-    
+
     public Map<String, Object> findById(int userId) {
 
         StringBuilder query = new StringBuilder();
         query.append("SELECT user_id, uname, email, password, mobile, address ");
+        query.append(", COALESCE(role, 'CITIZEN') AS role ");
         query.append("FROM crud WHERE user_id = :userId");
-        MapSqlParameterSource params =
-                new MapSqlParameterSource("userId", userId);
-        return jdbc.queryForList(query.toString(),params).getFirst();
+        MapSqlParameterSource params = new MapSqlParameterSource("userId", userId);
+        return jdbc.queryForMap(query.toString(), params);
+    }
+
+    // Find user by email and password (used for authentication)
+    public Map<String, Object> findByEmailAndPassword(String email, String password) {
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT user_id, uname, email, password, mobile, address, COALESCE(role, 'CITIZEN') AS role ");
+        query.append("FROM crud WHERE email = :email AND password = :password");
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("email", email);
+        params.addValue("password", password);
+
+        return jdbc.queryForMap(query.toString(), params);
     }
 
     // ================= INSERT =================
