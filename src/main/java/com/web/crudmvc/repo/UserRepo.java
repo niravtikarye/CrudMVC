@@ -41,7 +41,7 @@ public class UserRepo {
         query.append("FROM crud WHERE user_id = :userId");
         MapSqlParameterSource params =
                 new MapSqlParameterSource("userId", userId);
-        return jdbc.queryForList(query.toString(),params).getFirst();
+        return jdbc.queryForMap(query.toString(), params);
     }
 
     // ================= INSERT =================

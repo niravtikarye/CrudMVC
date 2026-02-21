@@ -21,7 +21,12 @@ public class CivicSolveController {
      @RequestMapping("/Registration")
     public ModelAndView showForm() {
         ModelAndView mv = new ModelAndView("Registraion_Page");
-                
+        return mv;
+    }
+    
+     @RequestMapping("/login")
+    public ModelAndView login() {
+        ModelAndView mv = new ModelAndView("Login_Page");
         return mv;
     }
 }
