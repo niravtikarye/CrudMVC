@@ -83,44 +83,50 @@ function ajaxCall(method, url, data, destination, isHtml) {
 //    }
 //}
 
-    const userTypeRadios = document.querySelectorAll('input[name="userType"]');
-    const solverDiv = document.getElementById('solverType');
-    const form = document.getElementById('regForm');
+const userTypeRadios = document.querySelectorAll('input[name="userType"]');
+const solverDiv = document.getElementById('solverType');
+const form = document.getElementById('regForm');
 
-    // Show/Hide solver type
-    userTypeRadios.forEach(r => {
-        r.addEventListener('change', () => {
-            if (r.value === "solver" && r.checked) {
-                solverDiv.style.display = "flex";
-                document.querySelectorAll('input[name="solver"]').forEach(s => s.required = true);
-            } else if (r.value === "user" && r.checked) {
-                solverDiv.style.display = "none";
-                document.querySelectorAll('input[name="solver"]').forEach(s => s.required = false);
-            }
-        });
-    });
-
-    // Password match validation
-    form.addEventListener('submit', function(e) {
-        const pass = document.getElementById('pass').value;
-        const confirm = document.getElementById('confirmPass').value;
-
-        if (pass !== confirm) {
-            alert("Passwords do not match");
-            e.preventDefault();
+// Show/Hide solver type
+userTypeRadios.forEach(r => {
+    r.addEventListener('change', () => {
+        if (r.value === "solver" && r.checked) {
+            solverDiv.style.display = "flex";
+            document.querySelectorAll('input[name="solver"]').forEach(s => s.required = true);
+        } else if (r.value === "user" && r.checked) {
+            solverDiv.style.display = "none";
+            document.querySelectorAll('input[name="solver"]').forEach(s => s.required = false);
         }
     });
-    
-    function goToRegeistration() {
+});
+
+// Password match validation
+form.addEventListener('submit', function (e) {
+    const pass = document.getElementById('pass').value;
+    const confirm = document.getElementById('confirmPass').value;
+
+    if (pass !== confirm) {
+        alert("Passwords do not match");
+        e.preventDefault();
+    }
+});
+
+function goToRegeistration() {
 //    let con = confirm("Are you sure you want to delete this user?");
 //    if (con) {
 //        let id = element.getAttribute("Did");
 ////        let data = 'userId=' + encodeURIComponent(id);
 
-        ajaxCall("POST", "Solve/Registration",null , "mainPage", true);
+    ajaxCall("POST", "Solve/Registration", null, "mainPage", true);
 
-    }
-    
-    function goToLoginPage(){
-        window.location.href = 'http://localhost:8080/CrudMVC/';
-    }
+}
+
+function goToLoginPage() {
+    window.location.href = 'http://localhost:8080/CrudMVC/';
+}
+
+function loginBtn() {
+    console.log("log btn");
+//        window.locaiton.href="login_Page.jsp";
+    window.location.href = "Solve/login";
+}
