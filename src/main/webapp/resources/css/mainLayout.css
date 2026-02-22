@@ -13,15 +13,15 @@ body {
 
 /* Sidebar */
 .sidebar {
-    width: 340px;
+    width: 260px;
     background: #fff;
-    padding: 30px;
+    padding: 20px;
     border-right: 1px solid #ddd;
     height: 100vh;
     position: fixed;
     left: 0;
     top: 0;
-    transition: 0.3s;
+    transition: 0.3s ease;
     display: flex;
     flex-direction: column;
 }
@@ -54,13 +54,12 @@ body {
 }
 
 .menu li {
-    padding: 12px 20px;
     cursor: pointer;
     transition: 0.2s;
     display: flex;
     align-items: center;
-    border: 1px solid;
-    padding: 20px;
+    border: 1px solid #eeeeee;
+    padding: 10px;
 }
 
 .menu li:first-child {
@@ -80,6 +79,12 @@ body {
 
 .menu span {
     margin-left: 10px;
+}
+
+.menu .active {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    border-left: 4px solid #333;
 }
 
 /* Hide text when closed */
@@ -102,8 +107,8 @@ body {
 
 /* Main Content */
 .main-content {
-    margin-left: 340px;
-    padding: 40px;
+    margin-left: 260px;
+    padding: 30px;
     width: 100%;
     transition: 0.3s;
 }
@@ -124,6 +129,7 @@ body {
     height: 100%;
     background: rgba(0,0,0,0.2);
     display: none;
+    z-index: 900;
 }
 
 .overlay.active {

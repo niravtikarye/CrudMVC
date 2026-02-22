@@ -118,8 +118,9 @@
     border: 1px solid #dcdcdc;
     background: #fff;
     cursor: pointer;
-    padding: 6px 10px;
-    font-size: 18px;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
     border-radius: 50%;
     z-index: 2;
 }
@@ -134,4 +135,10 @@
 .prev-btn:hover,
 .next-btn:hover {
     transform: translateY(-50%) scale(1.1);
+}
+
+.prev-btn:disabled,
+.next-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }
