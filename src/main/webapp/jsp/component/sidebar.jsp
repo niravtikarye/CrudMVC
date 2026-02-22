@@ -9,27 +9,26 @@
 <c:set var="currentPath" value="${pageContext.request.requestURI}" />
 
 <div class="sidebar" id="sidebar">
-
     <div class="sidebar-header">
-        <h3 class="title">Menu</h3>
-        <button class="toggle-btn" onclick="toggleSidebar()">◲</button>
+        <h3 class="title">CORE</h3>
+        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
     </div>
 
     <ul class="menu">
-        <li class="${(currentPath == contextPath || currentPath == contextPath.concat('/')) ? 'active' : ''}">
-            <a href="${contextPath}/">File Problem</a>
+        <li class="${fn:contains(currentPath, '/file') ? 'active' : ''}">
+            <span>📂</span> <a href="${contextPath}/">File Problem</a>
         </li>
-        <li class="${currentPath == contextPath.concat('/solver-list') ? 'active' : ''}">
-            <a href="${contextPath}/solver-list">Solver List</a>
+        <li class="${fn:contains(currentPath, '/solver') ? 'active' : ''}">
+            <span>👥</span> <a href="${contextPath}/solver-list">Solver List</a>
         </li>
-        <li><span>Explore</span></li>
-        <li><span>Solved Problem</span></li>
+        <li><span>🔍</span> <a href="#">Explore</a></li>
     </ul>
 
     <div class="bottom">
-        <span>Settings</span>
+        <li style="list-style:none; padding: 15px 25px;">
+            <span>⚙️</span> <a href="#" style="color:white; text-decoration:none; margin-left:15px;">Settings</a>
+        </li>
     </div>
-
 </div>
 
 <script>

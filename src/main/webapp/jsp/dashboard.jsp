@@ -11,6 +11,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Dashboard</title>
 
         <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mainLayout.css">
@@ -21,7 +22,7 @@
         <div class="overlay" id="overlay" onclick="closeMobileSidebar()"></div>
 
         <%@ include file="component/sidebar.jsp" %>
-
+        
         <div class="main-content">
 
             <h1 class="page-title">List of problems</h1>
@@ -35,6 +36,6 @@
         </div>
 
         <script src="${pageContext.request.contextPath}/resources/js/mainLayout.js"></script>
-        <script src="https://cdn.tailwindcss.com"></script>
+
     </body>
 </html>
