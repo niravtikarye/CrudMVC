@@ -21,7 +21,9 @@
         <li class="${fn:contains(currentPath, '/solver') ? 'active' : ''}">
             <span>👥</span> <a href="${contextPath}/solver-list">Solver List</a>
         </li>
-        <li><span>🔍</span> <a href="#">Explore</a></li>
+        <li><span>⑧</span> <a href="#">Explore</a></li>
+        <li><span>🔍</span> <a href="#">Search</a></li>
+        <li><span>+</span> <a href="#">Create</a></li>
     </ul>
 
     <div class="bottom">
@@ -29,6 +31,28 @@
             <span>⚙️</span> <a href="#" style="color:white; text-decoration:none; margin-left:15px;">Settings</a>
         </li>
     </div>
+</div>
+
+<!-- MOBILE SIDEBAR -->
+<div class="mobile-bottom-nav">
+    <a href="${contextPath}/" class="nav-item ${fn:contains(currentPath, '/') ? 'active' : ''}">
+        <span>🏠</span>
+    </a>
+
+    <a href="${contextPath}/solver-list" class="nav-item ${fn:contains(currentPath, '/solver') ? 'active' : ''}">
+        <span>👥</span>
+    </a>
+
+    <a href="#" class="nav-item">
+        <span>➕</span>
+    </a>
+    <a href="#" class="nav-item">
+        <span>🔍</span>
+    </a>
+
+    <a href="#" class="nav-item">
+        <span>⚙️</span>
+    </a>
 </div>
 
 <script>
