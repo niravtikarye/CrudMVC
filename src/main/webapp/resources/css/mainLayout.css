@@ -98,9 +98,46 @@ body {
     margin-left: 70px;
 }
 
+.insta-card{
+    border: red solid;
+}
+
+.card-grid{
+    border:blue solid;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    padding:20px
+}
+
+/* Cards area */
+.cards-section {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* User list area */
+.userlist-section {
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+}
+
 /* ================= MOBILE ================= */
 .mobile-bottom-nav {
     display: none;
+}
+
+@media (max-width:1024px){
+    .sidebar {
+        width: 180px;
+    }
+
+    .main-content {
+        margin-left: 180px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -139,5 +176,14 @@ body {
     .mobile-bottom-nav .nav-item.active {
         color: black;
         font-weight: bold;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr; /* Single column */
+        justify-items: center;
+    }
+
+    .userlist-section {
+        display: none; /* Hide user list on mobile */
     }
 }

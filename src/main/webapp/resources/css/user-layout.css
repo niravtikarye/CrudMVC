@@ -1,0 +1,110 @@
+/* ================= USER SUGGESTION LIST ================= */
+
+.suggest-container {
+    padding: 10px;
+}
+
+/* Top Profile */
+.suggest-profile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.suggest-profile-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.suggest-profile img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.suggest-username {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.suggest-switch {
+    color: #0095f6;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Header */
+.suggest-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.suggest-header span {
+    font-size: 14px;
+    color: #8e8e8e;
+    font-weight: 600;
+}
+
+.suggest-see-all {
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* User Row */
+.suggest-user {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.suggest-user-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.suggest-user img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top;
+}
+
+.suggest-user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.suggest-name {
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.suggest-sub-text {
+    font-size: 12px;
+    color: #8e8e8e;
+}
+
+.suggest-follow {
+    font-size: 12px;
+    font-weight: 600;
+    color: #0095f6;
+    cursor: pointer;
+}
+
+/* Footer */
+.suggest-footer {
+    margin-top: 20px;
+    font-size: 11px;
+    color: #c7c7c7;
+    line-height: 1.6;
+}

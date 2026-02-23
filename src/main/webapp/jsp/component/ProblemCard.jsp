@@ -5,8 +5,6 @@
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<meta charset="UTF-8">
-
 <div class="insta-card">
     <!-- Header -->
     <div class="insta-header">
