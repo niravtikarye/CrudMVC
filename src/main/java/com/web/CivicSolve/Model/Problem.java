@@ -6,15 +6,19 @@ public class Problem {
     private String title;
     private String description;
     private String[] image;
+    private Integer hipe;
+    private String status;
 
     public Problem() {
     }
 
-    public Problem(String type, String title, String description, String[] image) {
+    public Problem(String type, String title, String description, String[] image, Integer hipe, String status) {
         this.type = type;
         this.title = title;
         this.description = description;
         this.image = image;
+        this.hipe = hipe;
+        this.status = status;
     }
 
     public String getType() {
@@ -47,5 +51,21 @@ public class Problem {
 
     public void setImage(String[] image) {
         this.image = image;
+    }
+
+    public Integer getHipe() {
+        return hipe;
+    }
+
+    public void setHipe(Integer hipe) {
+        this.hipe = hipe;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
