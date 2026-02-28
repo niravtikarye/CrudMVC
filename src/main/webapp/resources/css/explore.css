@@ -1,0 +1,78 @@
+/* ================= EXPLORE GRID ================= */
+
+.explore-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+}
+
+/* Card */
+.explore-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Perfect square */
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Image */
+.explore-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: 0.3s ease;
+}
+
+/* Overlay */
+.explore-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.45); /* grey/dark bg */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    transition: 0.3s ease;
+}
+
+/* Overlay content */
+.overlay-content {
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    display: flex;
+    gap: 20px;
+}
+
+/* Hover Effect */
+.explore-card:hover img {
+    filter: brightness(70%);
+}
+
+.explore-card:hover .explore-overlay {
+    opacity: 1;
+}
+
+@media (max-width: 1024px) {
+    .explore-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .explore-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .explore-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
