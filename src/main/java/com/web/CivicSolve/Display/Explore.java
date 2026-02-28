@@ -8,8 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class Explore {
     @GetMapping("/explore")
     public ModelAndView DisplayExplore(){
-        ModelAndView mv = new ModelAndView("expore-page");
-        
+        ModelAndView mv = new ModelAndView("explore-page");
         return mv;
     }
 }

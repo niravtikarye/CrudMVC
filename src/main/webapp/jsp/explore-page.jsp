@@ -16,7 +16,6 @@
             <body>
                 <div class="explore-grid">
 
-                    <!-- <c:forEach var="problem" items="${problemList}"> -->
                     <div class="explore-card">
 
                         <img src="https://i.pinimg.com/736x/26/be/da/26beda6a53b20adf4d4c2ab32274730d.jpg"
@@ -24,8 +23,8 @@
 
                         <div class="explore-overlay">
                             <div class="overlay-content">
-                                <span>❤️ ${problem.hype}</span>
-                                <span>💬 ${problem.status}</span>
+                                <span>❤️ </span>
+                                <span>💬 </span>
                             </div>
                         </div>
 
@@ -37,8 +36,8 @@
 
                         <div class="explore-overlay">
                             <div class="overlay-content">
-                                <span>❤️ ${problem.hype}</span>
-                                <span>💬 ${problem.status}</span>
+                                <span>❤️ </span>
+                                <span>💬 </span>
                             </div>
                         </div>
 
@@ -50,8 +49,8 @@
 
                         <div class="explore-overlay">
                             <div class="overlay-content">
-                                <span>❤️ ${problem.hype}</span>
-                                <span>💬 ${problem.status}</span>
+                                <span>❤️ </span>
+                                <span>💬 </span>
                             </div>
                         </div>
 
@@ -63,8 +62,8 @@
 
                         <div class="explore-overlay">
                             <div class="overlay-content">
-                                <span>❤️ ${problem.hype}</span>
-                                <span>💬 ${problem.status}</span>
+                                <span>❤️ </span>
+                                <span>💬 </span>
                             </div>
                         </div>
 
@@ -76,8 +75,8 @@
 
                         <div class="explore-overlay">
                             <div class="overlay-content">
-                                <span>❤️ ${problem.hype}</span>
-                                <span>💬 ${problem.status}</span>
+                                <span>❤️ </span>
+                                <span>💬 </span>
                             </div>
                         </div>
 
@@ -89,13 +88,12 @@
 
                         <div class="explore-overlay">
                             <div class="overlay-content">
-                                <span>❤️ ${problem.hype}</span>
-                                <span>💬 ${problem.status}</span>
+                                <span>❤️ </span>
+                                <span>💬 </span>
                             </div>
                         </div>
 
                     </div>
-                    <!-- </c:forEach> -->
                 </div>
             </body>
 
