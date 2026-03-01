@@ -14,7 +14,7 @@ public class UserFormbean {
     private String name;
     private String email;
     private String password;
-    private Long  mobile;
+    private Long mobile;
     private String address;
 
     // getters & setters
@@ -50,11 +50,11 @@ public class UserFormbean {
         this.password = password;
     }
 
-    public Long  getMobile() {
+    public Long getMobile() {
         return mobile;
     }
 
-    public void setMobile(Long  mobile) {
+    public void setMobile(Long mobile) {
         this.mobile = mobile;
     }
 
