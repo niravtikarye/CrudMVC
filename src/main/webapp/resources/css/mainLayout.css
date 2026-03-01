@@ -90,24 +90,20 @@ body {
 .main-content {
     margin-left: 240px;
     padding: 20px;
-    width: 100%;
+    width: calc(100% - 240px);
     transition: 0.3s;
 }
 
-.sidebar.closed ~ .main-content {
+.sidebar.closed~.main-content {
     margin-left: 70px;
+    width: calc(100% - 70px);
 }
 
-.insta-card{
-    border: red solid;
-}
-
-.card-grid{
-    border:blue solid;
+.card-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 20px;
-    padding:20px
+    padding: 20px
 }
 
 /* Cards area */
@@ -130,13 +126,14 @@ body {
     display: none;
 }
 
-@media (max-width:1024px){
+@media (max-width:1024px) {
     .sidebar {
         width: 180px;
     }
 
     .main-content {
         margin-left: 180px;
+        width: calc(100% - 180px);
     }
 }
 
@@ -149,6 +146,7 @@ body {
 
     .main-content {
         margin-left: 0 !important;
+        width: 100%;
         padding-bottom: 70px;
     }
 
@@ -179,11 +177,13 @@ body {
     }
 
     .card-grid {
-        grid-template-columns: 1fr; /* Single column */
+        grid-template-columns: 1fr;
+        /* Single column */
         justify-items: center;
     }
 
     .userlist-section {
-        display: none; /* Hide user list on mobile */
+        display: none;
+        /* Hide user list on mobile */
     }
 }

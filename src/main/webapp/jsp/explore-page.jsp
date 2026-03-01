@@ -1,32 +1,23 @@
 <%-- Document : dashboard Created on : 17-Feb-2026, 10:51:03 pm Author : admin --%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<!DOCTYPE html>
-<html>
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dashboard</title>
-
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/explore.css">
-    </head>
-
-    <body>
-        <div class="explore-grid">
-            <c:forEach var="problem" items="${problemList}">
-                <div class="explore-card">
-                    <img src="${problem.image[0]}" alt="explore-img">
-                    <div class="explore-overlay">
-                        <div class="overlay-content">
-                            <span>❤ ${problem.hipe}️ </span>
-                            <span>💬 ${problem.status}</span>
-                        </div>
+<t:layout pageTitle="Explore">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/explore.css">
+    
+    <div class="explore-grid">
+        <c:forEach var="problem" items="${problemList}">
+            <div class="explore-card" onclick="redirection('${problem.title}')">
+                <img src="${problem.image[0]}" alt="explore-img">
+                <div class="explore-overlay">
+                    <div class="overlay-content">
+                        <span>❤ ${problem.hipe}️ </span>
+                        <span>💬 ${problem.status}</span>
                     </div>
                 </div>
-            </c:forEach>
-        </div>
-    </body>
-
-</html>
+            </div>
+        </c:forEach>
+    </div>
+    <script src="${pageContext.request.contextPath}/resources/js/explore.js"></script>
+</t:layout>

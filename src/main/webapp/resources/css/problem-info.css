@@ -1,0 +1,668 @@
+
+/* ================= MAIN CONTAINER ================= */
+.problem-container {
+    width: 95%;
+    max-width: 1300px;
+    height: 88vh;
+    display: flex;
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 10px 20px -5px rgba(0, 0, 0, 0.05);
+}
+
+/* ================= LEFT SIDE ================= */
+.problem-left {
+    flex: 1.1;
+    display: flex;
+    flex-direction: column;
+    background: #111827;
+    position: relative;
+    overflow: hidden;
+}
+
+.image-wrapper {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+    /* allows flex shrink */
+}
+
+.main-problem-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.problem-left:hover .main-problem-img {
+    transform: scale(1.04);
+}
+
+.overlay-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    background: linear-gradient(to top, #111827, transparent);
+    pointer-events: none;
+}
+
+/* UPLOADER PROFILE (MOVED LEFT) */
+.uploader-profile-left {
+    padding: 24px 30px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #1f2937;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 10;
+}
+
+.uploader-profile-left .avatar-lg {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #6366f1;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+    transition: transform 0.3s ease;
+}
+
+.uploader-profile-left:hover .avatar-lg {
+    transform: rotate(5deg) scale(1.05);
+}
+
+.uploader-profile-left .uploader-name {
+    font-size: 19px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.uploader-profile-left .upload-time {
+    font-size: 13px;
+    color: #9ca3af;
+    font-weight: 400;
+}
+
+/* ================= RIGHT SIDE DETAILS ================= */
+.problem-right {
+    flex: 1.1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background: #ffffff;
+}
+
+/* Scrollbar styling */
+.problem-right::-webkit-scrollbar {
+    width: 8px;
+}
+
+.problem-right::-webkit-scrollbar-track {
+    background: #f8fafc;
+    border-radius: 4px;
+}
+
+.problem-right::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.problem-right::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* HEADER */
+.problem-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+}
+
+.problem-header h2 {
+    font-size: 24px;
+    color: #111827;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+/* STATUS BADGE */
+.status-badge {
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge.solved {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+}
+
+.status-badge.assigned {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff;
+}
+
+.status-badge.active {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+}
+
+/* DESCRIPTION (SLIDES UP ON HOVER TO PUSH BUTTONS/PROFILE UP) */
+.problem-description-bottom {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0 30px;
+    background: #1f2937;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.problem-left:hover .problem-description-bottom {
+    max-height: 400px;
+    opacity: 1;
+    padding-bottom: 30px;
+}
+
+.problem-description-bottom h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #9ca3af;
+    margin-bottom: 12px;
+}
+
+.problem-description-bottom .description-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #d1d5db;
+    margin-bottom: 16px;
+}
+
+.problem-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tag {
+    background: rgba(255, 255, 255, 0.08);
+    /* Dark mode tag */
+    color: #e2e8f0;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s;
+    cursor: default;
+}
+
+.tag:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* ACTIONS BUTTONS (Likes/Comments MOVED LEFT) */
+.problem-actions-left {
+    display: flex;
+    gap: 16px;
+    padding: 0px 30px 24px 30px;
+    /* Aligned nicely under profile */
+    background: #1f2937;
+    z-index: 10;
+}
+
+.action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: none;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Dark-mode ready buttons */
+.like-btn {
+    background: rgba(225, 29, 72, 0.15);
+    color: #fda4af;
+    border: 1px solid rgba(225, 29, 72, 0.3);
+}
+
+.like-btn:hover {
+    background: rgba(225, 29, 72, 0.3);
+    color: #fff1f2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+}
+
+.discuss-btn {
+    background: rgba(22, 163, 74, 0.15);
+    color: #86efac;
+    border: 1px solid rgba(22, 163, 74, 0.3);
+}
+
+.discuss-btn:hover {
+    background: rgba(22, 163, 74, 0.3);
+    color: #f0fdf4;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+}
+
+.btn-icon {
+    font-size: 16px;
+    transition: transform 0.2s;
+}
+
+.action-btn:hover .btn-icon {
+    transform: scale(1.15);
+}
+
+/* CARDS COMMON */
+.card {
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 12px;
+}
+
+.card-header h4 {
+    font-size: 16px;
+    color: #0f172a;
+    font-weight: 700;
+}
+
+/* SOLVER CARD */
+.solver-card {
+    background: linear-gradient(to right, #ffffff, #fafaf9);
+    border-left: 5px solid #6366f1;
+}
+
+.solver-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.avatar-md {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e2e8f0;
+}
+
+.solver-name {
+    font-weight: 700;
+    font-size: 18px;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.time-block {
+    display: block;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.time-block .highlight {
+    color: #4f46e5;
+    font-weight: 700;
+    background: #e0e7ff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: 4px;
+}
+
+/* SOLUTION CARD */
+.solution-card {
+    background: linear-gradient(to right, #ffffff, #f8fafc);
+    border-left: 5px solid #10b981;
+}
+
+.solve-time {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 600;
+    background: #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.solution-details {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.solution-thumbnail-wrapper {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.solution-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.solution-thumbnail-wrapper:hover .solution-img {
+    transform: scale(1.05);
+}
+
+.solution-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.solution-thumbnail-wrapper:hover .solution-overlay {
+    opacity: 1;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+    transition: all 0.3s;
+    transform: translateY(10px);
+}
+
+.solution-thumbnail-wrapper:hover .btn-primary {
+    transform: translateY(0);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 10px 25px -3px rgba(16, 185, 129, 0.5);
+    transform: translateY(-2px) !important;
+}
+
+.solution-notes {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    position: relative;
+}
+
+.solution-notes::before {
+    content: '"';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    font-size: 40px;
+    color: #cbd5e1;
+    font-family: serif;
+    line-height: 1;
+}
+
+.solution-notes h5 {
+    color: #475569;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    padding-left: 20px;
+}
+
+.solution-notes p {
+    font-size: 15px;
+    color: #334155;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+/* DESKTOP-ONLY HIDING */
+.mobile-only {
+    display: none !important;
+}
+
+.solver-btn {
+    background: rgba(99, 102, 241, 0.15);
+    color: #a5b4fc;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.solver-btn:hover {
+    background: rgba(99, 102, 241, 0.3);
+    color: #e0e7ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+.close-panel-btn {
+    background: transparent;
+    color: #64748b;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+}
+
+.close-panel-btn:hover {
+    color: #0f172a;
+}
+
+/* ================= RESPONSIVE MOBILE TIKTOK INSTAGRAM LAYOUT ================= */
+@media (max-width: 900px) {
+    .mobile-only {
+        display: flex !important;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        overflow: hidden;
+        background: #000;
+    }
+
+    .problem-container {
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        border-radius: 0;
+        box-shadow: none;
+        position: relative;
+    }
+
+    .problem-left {
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+
+    .image-wrapper {
+        height: 100vh;
+        /* Full screen image */
+        width: 100vw;
+    }
+
+    .main-problem-img {
+        height: 100vh;
+        width: 100vw;
+    }
+
+    /* Uploader anchors bottom-left over the image */
+    .uploader-profile-left {
+        position: absolute;
+        bottom: 30px;
+        left: 20px;
+        background: transparent;
+        border: none;
+        padding: 0;
+        z-index: 20;
+        width: calc(100% - 100px);
+        /* Leave room for buttons */
+    }
+
+    .uploader-profile-left .uploader-name {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    .uploader-profile-left .upload-time {
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+        color: #e2e8f0;
+    }
+
+    /* Action buttons stack vertically bottom-right */
+    .problem-actions-left {
+        position: absolute;
+        bottom: 30px;
+        right: 15px;
+        flex-direction: column;
+        background: transparent;
+        padding: 0;
+        gap: 20px;
+        z-index: 30;
+    }
+
+    .action-btn {
+        flex-direction: column;
+        /* Icon above text */
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0;
+        gap: 4px;
+    }
+
+    .action-btn .btn-icon {
+        font-size: 28px;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    .action-btn .btn-text {
+        font-size: 11px;
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Description Overlay anchors above the profile info on hover */
+    .problem-left:hover .problem-description-bottom {
+        max-height: 40vh;
+        padding-bottom: 30px;
+    }
+
+    .problem-description-bottom {
+        position: absolute;
+        bottom: 100px;
+        /* Above profile */
+        left: 0;
+        width: calc(100% - 80px);
+        /* Don't cover vertical buttons */
+        background: transparent;
+        z-index: 25;
+    }
+
+    .problem-description-bottom h3,
+    .problem-description-bottom .description-text {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        color: #fff;
+    }
+
+    /* RIGHT PANEL (SLIDING) */
+    .problem-right {
+        position: absolute;
+        top: 0;
+        right: -100vw;
+        /* Hidden off screen */
+        width: 100vw;
+        height: 100vh;
+        background: #f8fafc;
+        z-index: 100;
+        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 20px;
+    }
+
+    .problem-right.active {
+        right: 0;
+        /* Slide in */
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .solution-thumbnail-wrapper {
+        height: 180px;
+    }
+}
+
+@media (max-width: 480px) {
+    .problem-right {
+        padding: 20px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .solution-thumbnail-wrapper {
+        height: 180px;
+    }
+}

@@ -6,6 +6,7 @@
     background: #fff;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
 }
 
 /* HEADER */
@@ -124,6 +125,7 @@
 .prev-btn {
     left: 10px;
 }
+
 .next-btn {
     right: 10px;
 }

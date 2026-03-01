@@ -15,7 +15,9 @@ public class Explore {
     @GetMapping("/explore")
     public ModelAndView DisplayExplore() {
         ModelAndView mv = new ModelAndView("explore-page");
+        mv.addObject("pageTitle", "Explore");
         mv.addObject("problemList", problemService.getProblems());
+        mv.addObject("contentPage", "/jsp/dashboard.jsp");
         return mv;
     }
 }

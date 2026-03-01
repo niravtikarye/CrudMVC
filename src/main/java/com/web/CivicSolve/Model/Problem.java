@@ -1,7 +1,6 @@
 package com.web.CivicSolve.Model;
 
 public class Problem {
-
     private String type;
     private String title;
     private String description;

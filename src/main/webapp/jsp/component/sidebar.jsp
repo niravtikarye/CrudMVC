@@ -21,9 +21,9 @@
         <li class="${fn:contains(currentPath, '/solver') ? 'active' : ''}">
             <span>👥</span> <a href="${contextPath}/solver-list">Solver List</a>
         </li>
-        <li><span>⑧</span> <a href="#">Explore</a></li>
+        <li><span>⑧</span> <a href="explore">Explore</a></li>
         <li><span>🔍</span> <a href="#">Search</a></li>
-        <li><span>+</span> <a href="#">Create</a></li>
+        <li><span>+</span> <a href="create">Create</a></li>
     </ul>
 
     <div class="bottom">

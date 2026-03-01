@@ -5,10 +5,9 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
-<html>
-<head>
-    <title>Add User</title>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
+<t:layout pageTitle="Add User">
     <!-- CSS -->
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/resources/css/style.css">
@@ -17,9 +16,6 @@
     <script
         src="${pageContext.request.contextPath}/resources/js/app.js">
     </script>
-</head>
-
-<body>
 
 <h2>Add User</h2>
 
@@ -28,7 +24,4 @@
     Email: <input type="text" id="email" name="email"><br><br>
     <input type="submit" value="Save">
 </form>
-
-</body>
-</html>
-
+</t:layout>
