@@ -29,15 +29,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 3. Optional: Reverse Geocoding (Getting rough address from Lat/Lng using Nominatim API)
         fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.display_name) {
-                    document.getElementById('address').value = data.display_name;
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching address:", error);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.display_name) {
+                        document.getElementById('address').value = data.display_name;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching address:", error);
+                });
     });
 
     // 4. Handle 5-Box Incremental Image Uploads
@@ -108,3 +108,40 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initial render of empty boxes
     renderGrid();
 });
+
+function ajaxCall(method, url, data, destination, isHtml) {
+    let xhttp = new XMLHttpRequest();
+    xhttp.onload = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            if (isHtml) {
+                document.getElementById(destination).innerHTML = this.responseText;
+            } else {
+                document.getElementById(destination).value = this.responseText;
+            }
+        }
+    };
+    xhttp.open(method, url, false);
+    xhttp.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+    xhttp.send(data);
+}
+
+function problemCreate() {
+    console.log("problemCreate function triggered.");
+
+    // Retrieve the form element
+    const form = document.querySelector('.create-form');
+
+    // Create FormData object which automatically grabs all named inputs, including files
+    const formData = new FormData(form);
+
+    // Call our shared ajaxCall function
+    // method="POST", url=form.action, data=formData, destination=null, isHtml=false
+    console.log("formData:", formData)
+    ajaxCall("POST", "/saveProblem", formData, null, false);
+
+    // Alert the user that the request was made
+    alert("Form submitted via AJAX! Check your browser console or backend.");
+
+    // Return false to prevent the default form submission (page reload)
+    return false;
+}
