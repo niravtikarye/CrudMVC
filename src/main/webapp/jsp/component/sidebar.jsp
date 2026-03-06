@@ -50,7 +50,7 @@
                     <a href="${contextPath}/createProblem" class="nav-item">
                         <span>➕</span>
                     </a>
-                    <a href="#" class="nav-item">
+                    <a href="${contextPath}/explore" class="nav-item">
                         <span>🔍</span>
                     </a>
 

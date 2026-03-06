@@ -185,3 +185,23 @@
 .btn-submit:hover {
     background: #0056b3;
 }
+
+@media (max-width: 600px) {
+    .btn-submit {
+        width: 100%;
+        padding: 14px 20px;
+    }
+
+    .location-inputs {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .create-problem-container {
+        padding: 15px;
+    }
+
+    .map-container {
+        height: 250px;
+    }
+}
