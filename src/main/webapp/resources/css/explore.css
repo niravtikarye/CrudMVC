@@ -10,7 +10,8 @@
 .explore-card {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1; /* Perfect square */
+    aspect-ratio: 1 / 1;
+    /* Perfect square */
     overflow: hidden;
     cursor: pointer;
 }
@@ -32,7 +33,8 @@
     width: 100%;
     height: 100%;
 
-    background: rgba(0, 0, 0, 0.45); /* grey/dark bg */
+    background: rgba(0, 0, 0, 0.45);
+    /* grey/dark bg */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -63,16 +65,18 @@
     .explore-grid {
         grid-template-columns: repeat(3, 1fr);
     }
-}
 
-@media (max-width: 768px) {
-    .explore-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .main-content {
+        padding: 0px 0px !important;
     }
 }
 
-@media (max-width: 480px) {
-    .explore-grid {
+@media (max-width: 768px) {
+    .explore-overlay {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .explore-card{
+        height: 200px;
     }
 }

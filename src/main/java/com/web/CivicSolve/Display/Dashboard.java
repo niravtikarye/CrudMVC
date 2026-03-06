@@ -23,4 +23,12 @@ public class Dashboard {
         mv.addObject("userList", userService.getUser());
         return mv;
     }
+
+    @GetMapping("/solver-list")
+    public ModelAndView GetSolverList() {
+        ModelAndView mv = new ModelAndView("get-solver-list");
+        mv.addObject("userList", userService.getUser());
+        mv.addObject("contentPage", "/jsp/get-solver-list.jsp");
+        return mv;
+    }
 }
