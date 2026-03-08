@@ -81,7 +81,7 @@ svg{
     transition: 0.2s;
 }
 
-.insta-actions span:hover svg{
+.left-actions:hover svg{
     transform: scale(1.2);
 }
 
@@ -95,6 +95,9 @@ svg{
     cursor: pointer;
 }
 
+.assign-icon:hover svg{
+    transform: scale(1.2);
+}
 .assign-icon.assigned {
     color: orange;
     fill: orange;
