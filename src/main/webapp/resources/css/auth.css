@@ -1,0 +1,91 @@
+/* auth.css */
+body {
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
+}
+.auth-container {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--shadow-color);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+.auth-container.register-form {
+    max-width: 500px;
+}
+.auth-container h2 {
+    margin-top: 0;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+.form-row .form-group {
+    flex: 1;
+}
+.form-group {
+    text-align: left;
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    color: var(--text-primary);
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+.btn-submit {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+.btn-submit:hover {
+    background-color: var(--primary-hover);
+}
+.auth-links {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+.auth-links a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+.auth-links a:hover {
+    text-decoration: underline;
+}
+#organization-group {
+    display: none;
+    background: var(--bg-color);
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px dashed var(--border-color);
+    margin-bottom: 15px;
+}

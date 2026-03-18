@@ -17,11 +17,15 @@
     <!-- Enable Spring MVC -->
     <mvc:annotation-driven/>
     <mvc:resources mapping="/resources/**" location="/resources/" />
+    <mvc:resources mapping="/uploads/**" location="file:///tmp/civicsolve_uploads/" />
 
     <!-- View Resolver (JSP) -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/jsp/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
+
+    <!-- Multipart Resolver for file uploads -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver" />
 
 </beans>

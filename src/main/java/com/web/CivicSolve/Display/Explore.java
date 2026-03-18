@@ -16,7 +16,8 @@ public class Explore {
     public ModelAndView DisplayExplore() {
         ModelAndView mv = new ModelAndView("explore-page");
         mv.addObject("pageTitle", "Explore");
-        mv.addObject("problemList", problemService.getProblems());
+        // Fetch real data from ProblemService
+        mv.addObject("problemList", problemService.getAllFeedProblems());
         mv.addObject("contentPage", "/jsp/dashboard.jsp");
         return mv;
     }

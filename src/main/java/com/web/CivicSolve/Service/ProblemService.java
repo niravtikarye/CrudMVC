@@ -1,46 +1,76 @@
 package com.web.CivicSolve.Service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.web.CivicSolve.Model.Problem;
+import com.web.CivicSolve.Model.ProblemFeedDTO;
+import com.web.CivicSolve.Repo.ProblemRepo;
 import java.util.List;
-import java.util.ArrayList;
 
 @Service
 public class ProblemService {
 
-    public List<Problem> getProblems() {
-        List<Problem> list = new ArrayList<>();
-        list.add(new Problem(
-                "ROAD ISSUE",
-                "Pothole on VIP Road",
-                "Large pothole near VIP Circle causing traffic and accidents.",
-                new String[]{
-                    "https://i.pinimg.com/736x/fc/41/ae/fc41ae82a5b1ec3531a7febf20ee04bc.jpg",
-                    "https://i.pinimg.com/736x/fc/41/ae/fc41ae82a5b1ec3531a7febf20ee04bc.jpg",
-                    "https://i.pinimg.com/1200x/17/86/d1/1786d17b4765f4c0ecaea37e935076d3.jpg",
-                },
-                100,
-                "Assigned"
-        ));
+    @Autowired
+    private ProblemRepo problemRepo;
 
-        list.add(new Problem(
-                "WATER SUPPLY",
-                "Water leakage in Utran",
-                "Water pipeline leaking continuously since last 3 days.",
-                new String[]{"https://i.pinimg.com/736x/87/0e/33/870e332750efe9c3a067f4e574d9399a.jpg"},
-                500,
-                "Completed"
-        ));
+    public Long reportNewProblem(Problem problem, List<String> imageUrls) {
+        // 1. Save the core problem to the problems table
+        Long generatedProbId = problemRepo.createProblem(problem);
 
-        list.add(new Problem(
-                "STREET LIGHT",
-                "Street light not working",
-                "Street light not functioning near Kapodra Ward.",
-                new String[]{"https://i.pinimg.com/736x/91/b4/df/91b4df7255162491033ebae7e6a5616b.jpg"},
-                240,
-                "Pending"
-        ));
+        // 2. If there are images, save them to the problem_images table
+        if (imageUrls != null && !imageUrls.isEmpty()) {
+            problemRepo.saveProblemImages(generatedProbId, imageUrls, "before");
+        }
 
-        return list;
+        return generatedProbId;
+    }
+
+    public List<ProblemFeedDTO> getAllFeedProblems() {
+        return problemRepo.getAllFeedProblems();
+    }
+
+    public List<ProblemFeedDTO> getProblemsByUserId(Long userId) {
+        return problemRepo.getProblemsByUserId(userId);
+    }
+
+    public List<ProblemFeedDTO> getProblemsAssignedToUser(Long solverId) {
+        return problemRepo.getProblemsAssignedToUser(solverId);
+    }
+
+    /**
+     * Toggles a hype for a user. Returns true if added, false if they already hyped it.
+     */
+    public boolean toggleHype(Long probId, Long userId) {
+        if (problemRepo.checkUserHyped(probId, userId)) {
+            return false; // Already hyped
+        }
+        problemRepo.addHype(probId, userId);
+        return true;   // Successfully added
+    }
+
+    /**
+     * Assigns a problem solver with estimated time and notes.
+     */
+    public void assignSolver(Long probId, Long solverId, Long assignedBy, String estimatedTime, String notes) {
+        problemRepo.assignProblem(probId, solverId, assignedBy, estimatedTime, notes);
+    }
+
+    /**
+     * Marks a problem as solved and links the "After" image proof.
+     */
+    public void markProblemSolved(Long probId, Long solverId, String imageUrl) {
+        problemRepo.markProblemSolved(probId, solverId);
+        
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            problemRepo.saveProblemImages(probId, java.util.Collections.singletonList(imageUrl), "after");
+        }
+    }
+
+    /**
+     * Verifies or rejects the solver's work.
+     * @param status Must be 'VERIFIED' or 'RE_OPENED'
+     */
+    public void verifyProblem(Long probId, Long authorId, String status) {
+        problemRepo.verifyProblem(probId, authorId, status);
     }
 }

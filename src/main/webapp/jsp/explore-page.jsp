@@ -3,19 +3,19 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<t:layout pageTitle="Explore">
+<t:layout pageTitle="Explore" onload="initExplore()">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/explore.css">
 
     <div class="explore-grid">
         <c:forEach var="problem" items="${problemList}">
             <div class="explore-card" onclick="openProblemInfo(this)" data-title="${problem.title}"
-                 data-desc="${problem.description}" data-hipe="${problem.hipe}"
-                 data-status="${problem.status}" data-image="${problem.image[0]}">
+                 data-desc="${problem.description}" data-hipe="${problem.hypeCount}"
+                 data-status="${problem.status}" data-image="${not empty problem.imageUrls ? problem.imageUrls[0] : 'https://i.pinimg.com/736x/00/0d/9c/000d9c727330e506be6d8ee2497cde54.jpg'}">
 
-                <img src="${problem.image[0]}" alt="explore-img">
+                <img src="${not empty problem.imageUrls ? problem.imageUrls[0] : 'https://i.pinimg.com/736x/00/0d/9c/000d9c727330e506be6d8ee2497cde54.jpg'}" alt="explore-img">
                 <div class="explore-overlay">
                     <div class="overlay-content">
-                        <span>❤ ${problem.hipe}️ </span>
+                        <span>❤ ${problem.hypeCount}️ </span>
                         <span>💬 ${problem.status}</span>
                     </div>
                 </div>

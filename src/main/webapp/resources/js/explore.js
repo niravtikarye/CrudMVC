@@ -44,19 +44,15 @@ function closeProblemInfo(isFromHistory = false) {
     }
 }
 
-// Handle Back Button
-window.addEventListener('popstate', (event) => {
-    // If the state doesn't have modalOpen, assume we are back to main explore
+// Handle Back Button natively via window
+window.onpopstate = function(event) {
     if (!event.state || !event.state.modalOpen) {
         closeProblemInfo(true);
-    } else {
-        // If we want to handle forward navigation to a modal state, we could trigger logic here,
-        // but typically a page reload handles direct links.
     }
-});
+};
 
-// Check if loaded with a problem in URL
-window.addEventListener('DOMContentLoaded', () => {
+// Check if loaded with a problem in URL (called via body onload)
+function initExplore() {
     const params = new URLSearchParams(window.location.search);
     const probTitle = params.get('problem');
 
@@ -87,7 +83,8 @@ window.addEventListener('DOMContentLoaded', () => {
         // Initial state
         window.history.replaceState({ modalOpen: false }, '', window.location.href);
     }
-});
+}
+
 function toggleSolverPanel() {
     const panel = document.getElementById('solverPanel');
     if (panel.classList.contains('active')) {

@@ -1,0 +1,21 @@
+# ============================================================
+#  application.properties.example  –  Template for team members
+#  ✅ This file IS committed to Git (no real secrets here!)
+#
+#  HOW TO USE:
+#    1. Copy this file:
+#       cp application.properties.example application.properties
+#    2. Fill in your actual values in application.properties
+#    3. Never commit application.properties  (it's in .gitignore)
+# ============================================================
+
+# ── Database ────────────────────────────────────────────────
+db.url=jdbc:postgresql://<HOST>:<PORT>/<DATABASE>?user=<USER>
+db.username=<DB_USERNAME>
+db.password=<DB_PASSWORD>
+
+# ── JWT ────────────────────────────────────────────────────
+# Secret must be at least 32 characters for HS256
+jwt.secret=<YOUR_RANDOM_SECRET_KEY_MIN_32_CHARS>
+# Token lifetime in milliseconds  (86400000 = 24 hours)
+jwt.expiry.ms=86400000

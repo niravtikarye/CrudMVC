@@ -18,7 +18,8 @@ public class Dashboard {
     @GetMapping("/")
     public ModelAndView DisplayDashboard() {
         ModelAndView mv = new ModelAndView("dashboard");
-        mv.addObject("problemList", problemService.getProblems());
+        // Fetch real data from ProblemService
+        mv.addObject("problemList", problemService.getAllFeedProblems());
         mv.addObject("contentPage", "/jsp/dashboard.jsp");
         mv.addObject("userList", userService.getUser());
         return mv;
