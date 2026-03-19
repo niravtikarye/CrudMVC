@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Authentication REST controller.
@@ -72,7 +74,7 @@ public class AuthController {
 
         if (user != null) {
             // ✅ Credentials valid – generate JWT and store it in an HttpOnly cookie
-            String token = jwtUtil.generateToken(user.getUserId(), user.getRole());
+            String token = jwtUtil.generateToken(user);
 
             Cookie authCookie = new Cookie(JwtAuthFilter.COOKIE_NAME, token);
             authCookie.setHttpOnly(true);          // NOT readable by JS – XSS-safe
@@ -93,13 +95,20 @@ public class AuthController {
     // GET /api/auth/logout
     // -----------------------------------------------------------------------
     @GetMapping("/logout")
-    public ResponseEntity<String> logoutUser(HttpServletResponse response) {
+    public ResponseEntity<String> logoutUser(HttpServletRequest request, HttpServletResponse response) {
         // Overwrite the existing cookie with an expired one so the browser deletes it
         Cookie expired = new Cookie(JwtAuthFilter.COOKIE_NAME, "");
         expired.setMaxAge(0);          // tells browser to delete immediately
         expired.setPath("/");
         expired.setHttpOnly(true);
         response.addCookie(expired);
+
+        // Also invalidate any existing HttpSession to clear stale session attributes
+        // (leftover from old session-based auth, or just to be safe)
+        HttpSession session = request.getSession(false); // false = don't create if absent
+        if (session != null) {
+            session.invalidate();
+        }
 
         return ResponseEntity.ok("Logged out successfully.");
     }

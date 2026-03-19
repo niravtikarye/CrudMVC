@@ -27,7 +27,8 @@
                     </div>
 
                     <!-- Grab User ID from the active Session -->
-                    <input type="hidden" name="userId" value="${sessionScope.loggedInUser != null ? sessionScope.loggedInUser.userId : ''}" />
+                    <!-- Hidden user ID fetched from loggedInUser request attribute -->
+                    <input type="hidden" name="userId" value="${requestScope.loggedInUser != null ? requestScope.loggedInUser.userId : ''}" />
 
                     <div class="form-group">
                         <label for="areaId">Area / Ward</label>

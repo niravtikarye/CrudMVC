@@ -49,10 +49,10 @@ public class ProblemService {
     }
 
     /**
-     * Assigns a problem solver with estimated time and notes.
+     * Assigns a problem solver to the task.
      */
-    public void assignSolver(Long probId, Long solverId, Long assignedBy, String estimatedTime, String notes) {
-        problemRepo.assignProblem(probId, solverId, assignedBy, estimatedTime, notes);
+    public void assignSolver(Long probId, Long solverId, Long assignedBy) {
+        problemRepo.assignProblem(probId, solverId, assignedBy);
     }
 
     /**

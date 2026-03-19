@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,9 +20,12 @@ import java.io.IOException;
  *  - If missing or invalid → the attribute is not set (anonymous request).
  *  - Always forwards to the next filter / servlet  — this is NOT a blocking gate.
  *    Individual controllers / pages decide what to do with unauthenticated users.
+ *
+ * NOTE: Registered in web.xml via DelegatingFilterProxy (bean name = "jwtAuthFilter").
+ *       Do NOT use @WebFilter — that creates a separate Tomcat-managed instance
+ *       where @Autowired fields are null.
  */
-@Component
-@WebFilter("/*")
+@Component("jwtAuthFilter")
 public class JwtAuthFilter implements Filter {
 
     /** Cookie name written by AuthController on login. */

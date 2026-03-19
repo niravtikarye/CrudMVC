@@ -55,8 +55,6 @@ public class ProblemActionController {
             @PathVariable Long probId,
             @RequestParam Long solverId,
             @RequestParam Long assignedBy,
-            @RequestParam(required = false) String estimatedTime,
-            @RequestParam(required = false) String notes,
             HttpServletRequest request) {
 
         try {
@@ -69,8 +67,7 @@ public class ProblemActionController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Citizens cannot assign or solve problems.");
             }
 
-            // Update problemService to take extra details If needed
-            problemService.assignSolver(probId, solverId, assignedBy, estimatedTime, notes);
+            problemService.assignSolver(probId, solverId, assignedBy);
             return ResponseEntity.ok("Problem assigned successfully.");
         } catch (Exception e) {
             e.printStackTrace();

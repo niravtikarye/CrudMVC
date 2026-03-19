@@ -18,12 +18,12 @@
                         <li class="nav-links">
                             <span>🔍</span> <a href="${contextPath}/explore">Explore</a>
                         </li>
-                        <c:if test="${sessionScope.loggedInUser != null && sessionScope.loggedInUser.role == 'citizen'}">
+                        <c:if test="${requestScope.loggedInUser != null && requestScope.loggedInUser.role == 'citizen'}">
                             <li class="nav-links">
                                 <span>➕</span> <a href="${contextPath}/createProblem">Create Issue</a>
                             </li>
                         </c:if>
-                        <c:if test="${sessionScope.loggedInUser != null}">
+                        <c:if test="${requestScope.loggedInUser != null}">
                             <li class="nav-links">
                                 <span>👤</span> <a href="${contextPath}/profile">My Profile</a>
                             </li>
@@ -32,9 +32,9 @@
 
                     <div class="bottom" style="padding: 15px 25px;">
                         <c:choose>
-                            <c:when test="${sessionScope.loggedInUser != null}">
+                            <c:when test="${requestScope.loggedInUser != null}">
                                 <div style="display:flex; flex-direction:column; gap:10px;">
-                                    <span style="color:var(--text-secondary); font-size:0.85rem;">Logged in as ${sessionScope.loggedInUser.name}</span>
+                                    <span style="color:var(--text-secondary); font-size:0.85rem;">Logged in as ${requestScope.loggedInUser.name}</span>
                                     <a href="${contextPath}/api/auth/logout" style="color:#ff4d4d; text-decoration:none; display:flex; align-items:center; gap:10px;">
                                         <span>🚪</span> Logout
                                     </a>
@@ -59,13 +59,13 @@
                         <span>🔍</span>
                     </a>
                     
-                    <c:if test="${sessionScope.loggedInUser != null && sessionScope.loggedInUser.role == 'citizen'}">
+                    <c:if test="${requestScope.loggedInUser != null && requestScope.loggedInUser.role == 'citizen'}">
                         <a href="${contextPath}/createProblem" class="nav-item">
                             <span>➕</span>
                         </a>
                     </c:if>
 
-                    <c:if test="${sessionScope.loggedInUser != null}">
+                    <c:if test="${requestScope.loggedInUser != null}">
                         <a href="${contextPath}/profile" class="nav-item">
                             <span>👤</span>
                         </a>

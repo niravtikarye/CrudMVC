@@ -17,6 +17,7 @@ public class ProblemFeedDTO {
     private String areaName;
     private String categoryName;
     private String subcategoryName;
+    private Long solverId; // null = unassigned, non-null = already has a solver
 
     // Associated Images (just URLs for the slider)
     private List<String> imageUrls = new ArrayList<>();
@@ -56,4 +57,7 @@ public class ProblemFeedDTO {
     public List<String> getImageUrls() { return imageUrls; }
     public void setImageUrls(List<String> imageUrls) { this.imageUrls = imageUrls; }
     public void addImageUrl(String url) { this.imageUrls.add(url); }
+
+    public Long getSolverId() { return solverId; }
+    public void setSolverId(Long solverId) { this.solverId = solverId; }
 }

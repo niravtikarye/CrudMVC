@@ -89,10 +89,14 @@ public class ProblemRepo {
                         dto.setAreaName(rs.getString("area_name"));
                         dto.setSubcategoryName(rs.getString("subcategory_name"));
                         dto.setCategoryName(rs.getString("category_name"));
+                        // solver_id: null means ACTIVE/unassigned, non-null means already taken
+                        long sid = rs.getLong("solver_id");
+                        if (!rs.wasNull()) {
+                            dto.setSolverId(sid);
+                        }
                         map.put(probId, dto);
                     }
                     String imageUrl = rs.getString("image_url");
-                    // We only want to show the 'Before' images on the cards to keep the UI clean
                     if (imageUrl != null) {
                         dto.addImageUrl(imageUrl);
                     }
@@ -106,7 +110,7 @@ public class ProblemRepo {
      * Fetches all problems with their associations (user name, category, etc.) and images attached for the feed.
      */
     public List<ProblemFeedDTO> getAllFeedProblems() {
-        String sql = "SELECT p.problem_id, p.title, p.description, p.status, p.hype_count, p.created_at, " +
+        String sql = "SELECT p.problem_id, p.title, p.description, p.status, p.hype_count, p.created_at, p.solver_id, " +
                      "u.name AS author_name, " +
                      "a.area_name, " +
                      "sc.subcategory_name, " +
@@ -117,7 +121,6 @@ public class ProblemRepo {
                      "LEFT JOIN areas a ON p.area_id = a.area_id " +
                      "LEFT JOIN sub_categories sc ON p.subcategory_id = sc.subcategory_id " +
                      "LEFT JOIN categories c ON sc.category_id = c.category_id " +
-                     // Grab only 'before' images for the primary feeds to avoid spoiler clutter
                      "LEFT JOIN problem_images pi ON p.problem_id = pi.problem_id AND (pi.image_type IS NULL OR pi.image_type = 'before') " +
                      "ORDER BY p.created_at DESC";
 
@@ -128,7 +131,7 @@ public class ProblemRepo {
      * Fetches problems reported by a specific Citizen.
      */
     public List<ProblemFeedDTO> getProblemsByUserId(Long userId) {
-        String sql = "SELECT p.problem_id, p.title, p.description, p.status, p.hype_count, p.created_at, " +
+        String sql = "SELECT p.problem_id, p.title, p.description, p.status, p.hype_count, p.created_at, p.solver_id, " +
                      "u.name AS author_name, " +
                      "a.area_name, " +
                      "sc.subcategory_name, " +
@@ -151,7 +154,7 @@ public class ProblemRepo {
      * Fetches problems currently assigned to a specific Solver (VMC/NGO/Noble).
      */
     public List<ProblemFeedDTO> getProblemsAssignedToUser(Long solverId) {
-        String sql = "SELECT p.problem_id, p.title, p.description, p.status, p.hype_count, p.created_at, " +
+        String sql = "SELECT p.problem_id, p.title, p.description, p.status, p.hype_count, p.created_at, p.solver_id, " +
                      "u.name AS author_name, " +
                      "a.area_name, " +
                      "sc.subcategory_name, " +
@@ -164,9 +167,7 @@ public class ProblemRepo {
                      "LEFT JOIN sub_categories sc ON p.subcategory_id = sc.subcategory_id " +
                      "LEFT JOIN categories c ON sc.category_id = c.category_id " +
                      "LEFT JOIN problem_images pi ON p.problem_id = pi.problem_id AND (pi.image_type IS NULL OR pi.image_type = 'before') " +
-                     // Using the history log to find assignments
                      "WHERE p.solver_id = :solverId " +
-                     // Only show tasks that are currently IN_PROGRESS or recently RESOLVED by them
                      "AND p.status IN ('IN_PROGRESS', 'RESOLVED') " +
                      "ORDER BY p.created_at DESC";
 
@@ -201,9 +202,9 @@ public class ProblemRepo {
     }
 
     /**
-     * Executes the stored PL/pgSQL function assign_problem() and appends solver note fallback.
+     * Executes the stored PL/pgSQL function assign_problem().
      */
-    public void assignProblem(Long probId, Long solverId, Long assignedBy, String estimatedTime, String notes) {
+    public void assignProblem(Long probId, Long solverId, Long assignedBy) {
         // 1. Run core procedure
         String sql = "SELECT assign_problem(:probId, :solverId, :assignedBy)";
         MapSqlParameterSource params = new MapSqlParameterSource()
@@ -211,18 +212,6 @@ public class ProblemRepo {
                 .addValue("solverId", solverId)
                 .addValue("assignedBy", assignedBy);
         jdbc.query(sql, params, rs -> null);
-
-        // 2. Append Solver Details to Problem Description (Visibility log for Citizens)
-        if ((estimatedTime != null && !estimatedTime.isEmpty()) || (notes != null && !notes.isEmpty())) {
-            String updateSql = "UPDATE problems SET description = CONCAT(description, :solverLog) WHERE problem_id = :probId";
-            String solverLog = "\n\n--- 🔧 Solver Assignment Details ---\n" +
-                               "⌛ Est. Duration: " + estimatedTime + "\n" +
-                               "📝 Plan: " + notes;
-            MapSqlParameterSource updateParams = new MapSqlParameterSource()
-                    .addValue("probId", probId)
-                    .addValue("solverLog", solverLog);
-            jdbc.update(updateSql, updateParams);
-        }
     }
 
     /**

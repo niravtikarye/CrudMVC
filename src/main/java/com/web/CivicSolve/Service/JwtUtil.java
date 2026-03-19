@@ -55,19 +55,21 @@ public class JwtUtil {
     // ────────────────────────────────────────────────────────────────────
 
     /**
-     * Creates a signed JWT containing userId and role.
+     * Creates a signed JWT containing userId, role, name, username, and email.
      *
-     * @param userId the user's database PK
-     * @param role   the user's role string ("citizen", "vmc", "ngo", "noble")
+     * @param user the authenticated UserDTO (must have all fields populated)
      * @return compact signed JWT string (header.payload.signature)
      */
-    public String generateToken(Long userId, String role) {
+    public String generateToken(UserDTO user) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expiryMs);
 
         return Jwts.builder()
-                .setSubject(String.valueOf(userId))
-                .claim("role", role)
+                .setSubject(String.valueOf(user.getUserId()))
+                .claim("role",     user.getRole())
+                .claim("name",     user.getName())
+                .claim("username", user.getUsername())
+                .claim("email",    user.getEmail())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(signingKey, SignatureAlgorithm.HS256)
@@ -126,7 +128,10 @@ public class JwtUtil {
 
         UserDTO dto = new UserDTO();
         dto.setUserId(Long.parseLong(claims.getSubject()));
-        dto.setRole((String) claims.get("role"));
+        dto.setRole(    (String) claims.get("role"));
+        dto.setName(    (String) claims.get("name"));
+        dto.setUsername((String) claims.get("username"));
+        dto.setEmail(   (String) claims.get("email"));
         return dto;
     }
 }

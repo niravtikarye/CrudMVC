@@ -45,43 +45,12 @@ function assignProblem(element, probId) {
         return;
     }
 
-    // --- NEW POPUP LOGIC ---
-    // Populate hidden ID and reset form
-    document.getElementById('assign-prob-id').value = probId;
-    document.getElementById('assign-estimate').value = "";
-    document.getElementById('assign-notes').value = "";
+    const assignedBy = solverId; // solver is assigning to themselves
+    const url = window.APP_CONTEXT + '/api/problems/' + probId + '/assign?solverId=' + solverId + '&assignedBy=' + assignedBy;
 
-    const modal = document.getElementById('assign-modal');
-    modal.style.display = 'flex';
-    setTimeout(() => modal.classList.add('show'), 10);
-}
-
-function closeAssignModal() {
-    const modal = document.getElementById('assign-modal');
-    modal.classList.remove('show');
-    setTimeout(() => modal.style.display = 'none', 300);
-}
-
-function submitAssignForm(event) {
-    event.preventDefault();
-
-    const probId = document.getElementById('assign-prob-id').value;
-    const hours = document.getElementById('assign-estimate').value;
-    const notes = document.getElementById('assign-notes').value;
-    const solverId = window.USER_ID;
-
-    const formData = new FormData();
-    formData.append("solverId", solverId);
-    formData.append("assignedBy", solverId);
-    formData.append("estimatedTime", hours + " hours");
-    formData.append("notes", notes);
-
-    const url = window.APP_CONTEXT + '/api/problems/' + probId + '/assign';
-
-    ajaxCall('POST', url, formData, null, false, function(err, responseText) {
+    ajaxCall('POST', url, null, null, false, function(err, responseText) {
         if (!err) {
             alert("Problem successfully assigned to you!");
-            closeAssignModal();
             location.reload(); // Refresh to show IN_PROGRESS status
         } else {
             alert(responseText || "Failed to assign problem.");
