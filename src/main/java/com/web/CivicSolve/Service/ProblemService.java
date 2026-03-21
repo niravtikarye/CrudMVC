@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.web.CivicSolve.Model.Problem;
 import com.web.CivicSolve.Model.ProblemFeedDTO;
 import com.web.CivicSolve.Repo.ProblemRepo;
+import org.springframework.scheduling.annotation.Scheduled;
 import java.util.List;
 
 @Service
@@ -38,14 +39,15 @@ public class ProblemService {
     }
 
     /**
-     * Toggles a hype for a user. Returns true if added, false if they already hyped it.
+     * Toggles a hype for a user. Returns true if added, false if they already hyped
+     * it.
      */
     public boolean toggleHype(Long probId, Long userId) {
         if (problemRepo.checkUserHyped(probId, userId)) {
             return false; // Already hyped
         }
         problemRepo.addHype(probId, userId);
-        return true;   // Successfully added
+        return true; // Successfully added
     }
 
     /**
@@ -60,7 +62,7 @@ public class ProblemService {
      */
     public void markProblemSolved(Long probId, Long solverId, String imageUrl) {
         problemRepo.markProblemSolved(probId, solverId);
-        
+
         if (imageUrl != null && !imageUrl.isEmpty()) {
             problemRepo.saveProblemImages(probId, java.util.Collections.singletonList(imageUrl), "after");
         }
@@ -68,9 +70,29 @@ public class ProblemService {
 
     /**
      * Verifies or rejects the solver's work.
+     * 
      * @param status Must be 'VERIFIED' or 'RE_OPENED'
      */
     public void verifyProblem(Long probId, Long authorId, String status) {
         problemRepo.verifyProblem(probId, authorId, status);
+    }
+
+    /**
+     * Unassigns a problem from its current solver and resets it to PENDING.
+     */
+    public void unassignProblem(Long probId) {
+        problemRepo.unassignProblem(probId);
+    }
+
+    /**
+     * Runs every hour to auto-release problems assigned but not solved within 48
+     * hours.
+     */
+    @Scheduled(cron = "0 0 * * * *") // Runs at the top of every hour
+    public void autoReleaseOverdueProblems() {
+        int releasedCount = problemRepo.autoUnassignOverdueProblems();
+        if (releasedCount > 0) {
+            System.out.println("[Scheduled] Auto-released " + releasedCount + " overdue problems based on 48h limit.");
+        }
     }
 }

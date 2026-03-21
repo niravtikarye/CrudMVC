@@ -43,11 +43,11 @@ public class JwtUtil {
      * The signing key is built immediately — no @PostConstruct needed.
      */
     public JwtUtil(
-            @Value("${jwt.secret}")    String secretString,
+            @Value("${jwt.secret}") String secretString,
             @Value("${jwt.expiry.ms}") long expiryMs) {
         // Keys.hmacShaKeyFor requires the byte array to be ≥ 32 bytes for HS256
         this.signingKey = Keys.hmacShaKeyFor(secretString.getBytes());
-        this.expiryMs   = expiryMs;
+        this.expiryMs = expiryMs;
     }
 
     // ────────────────────────────────────────────────────────────────────
@@ -66,10 +66,7 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .setSubject(String.valueOf(user.getUserId()))
-                .claim("role",     user.getRole())
-                .claim("name",     user.getName())
-                .claim("username", user.getUsername())
-                .claim("email",    user.getEmail())
+                .claim("role", user.getRole())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(signingKey, SignatureAlgorithm.HS256)
@@ -128,10 +125,8 @@ public class JwtUtil {
 
         UserDTO dto = new UserDTO();
         dto.setUserId(Long.parseLong(claims.getSubject()));
-        dto.setRole(    (String) claims.get("role"));
-        dto.setName(    (String) claims.get("name"));
-        dto.setUsername((String) claims.get("username"));
-        dto.setEmail(   (String) claims.get("email"));
+        dto.setRole((String) claims.get("role"));
+        // Name, username, and email are deliberately excluded from JWT payload
         return dto;
     }
 }

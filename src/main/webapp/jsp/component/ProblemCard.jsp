@@ -80,6 +80,10 @@
         
         <!-- Logic for Solvers to Mark as Solved -->
         <c:if test="${problem.status == 'IN_PROGRESS' && userRole != 'citizen' && userRole != ''}">
+            <c:if test="${problem.solverId == requestScope.loggedInUser.userId}">
+                <button type="button" onclick="rejectProblem('${problem.probId}')" style="background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:4px; margin-bottom:10px; cursor:pointer; width:100%;">Reject / Unassign Problem</button>
+            </c:if>
+
             <form id="solve-form-${problem.probId}" onsubmit="solveProblem(event, '${problem.probId}')" enctype="multipart/form-data" style="display:flex; gap:10px; align-items:center; background:var(--bg-color); padding:10px; border-radius:6px;">
                 <input type="file" name="proofImage" accept="image/*" required style="font-size: 0.8rem; flex:1;"/>
                 <button type="submit" style="background:var(--primary-color); color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">Finish Job</button>

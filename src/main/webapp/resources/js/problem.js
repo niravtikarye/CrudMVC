@@ -90,3 +90,18 @@ function verifyProblem(probId, status) {
         }
     });
 }
+
+function rejectProblem(probId) {
+    if (!confirm("Are you sure you want to reject and unassign this problem from yourself?")) return;
+    
+    const url = window.APP_CONTEXT + '/api/problems/' + probId + '/unassign';
+    
+    ajaxCall('POST', url, null, null, false, function(err, responseText) {
+        if (!err) {
+            alert("Problem rejected successfully!");
+            location.reload();
+        } else {
+            alert(responseText || "Failed to reject problem.");
+        }
+    });
+}

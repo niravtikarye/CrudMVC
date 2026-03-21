@@ -27,8 +27,9 @@ public class ProblemRepo {
      * Inserts a new problem into the database and returns the generated problem_id.
      */
     public Long createProblem(Problem problem) {
-        String sql = "INSERT INTO problems (user_id, subcategory_id, area_id, address_description, title, description) " +
-                     "VALUES (:userId, :subcategoryId, :areaId, :addressDescription, :title, :description)";
+        String sql = "INSERT INTO problems (user_id, subcategory_id, area_id, address_description, title, description) "
+                +
+                "VALUES (:userId, :subcategoryId, :areaId, :addressDescription, :title, :description)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("userId", problem.getUserId())
@@ -39,7 +40,7 @@ public class ProblemRepo {
                 .addValue("description", problem.getDescription());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbc.update(sql, params, keyHolder, new String[]{"problem_id"});
+        jdbc.update(sql, params, keyHolder, new String[] { "problem_id" });
 
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
@@ -53,7 +54,7 @@ public class ProblemRepo {
         }
 
         String sql = "INSERT INTO problem_images (problem_id, image_url, image_type) " +
-                     "VALUES (:probId, :imageUrl, :imageType)";
+                "VALUES (:probId, :imageUrl, :imageType)";
 
         MapSqlParameterSource[] batchParams = new MapSqlParameterSource[imageUrls.size()];
         for (int i = 0; i < imageUrls.size(); i++) {
@@ -107,22 +108,25 @@ public class ProblemRepo {
     }
 
     /**
-     * Fetches all problems with their associations (user name, category, etc.) and images attached for the feed.
+     * Fetches all problems with their associations (user name, category, etc.) and
+     * images attached for the feed.
      */
     public List<ProblemFeedDTO> getAllFeedProblems() {
-        String sql = "SELECT p.problem_id, p.title, p.description, p.status, p.hype_count, p.created_at, p.solver_id, " +
-                     "u.name AS author_name, " +
-                     "a.area_name, " +
-                     "sc.subcategory_name, " +
-                     "c.category_name, " +
-                     "pi.image_url " +
-                     "FROM problems p " +
-                     "LEFT JOIN users u ON p.user_id = u.user_id " +
-                     "LEFT JOIN areas a ON p.area_id = a.area_id " +
-                     "LEFT JOIN sub_categories sc ON p.subcategory_id = sc.subcategory_id " +
-                     "LEFT JOIN categories c ON sc.category_id = c.category_id " +
-                     "LEFT JOIN problem_images pi ON p.problem_id = pi.problem_id AND (pi.image_type IS NULL OR pi.image_type = 'before') " +
-                     "ORDER BY p.created_at DESC";
+        String sql = "SELECT p.problem_id, p.title, p.description, p.status, p.hype_count, p.created_at, p.solver_id, "
+                +
+                "u.name AS author_name, " +
+                "a.area_name, " +
+                "sc.subcategory_name, " +
+                "c.category_name, " +
+                "pi.image_url " +
+                "FROM problems p " +
+                "LEFT JOIN users u ON p.user_id = u.user_id " +
+                "LEFT JOIN areas a ON p.area_id = a.area_id " +
+                "LEFT JOIN sub_categories sc ON p.subcategory_id = sc.subcategory_id " +
+                "LEFT JOIN categories c ON sc.category_id = c.category_id " +
+                "LEFT JOIN problem_images pi ON p.problem_id = pi.problem_id AND (pi.image_type IS NULL OR pi.image_type = 'before') "
+                +
+                "ORDER BY p.created_at DESC";
 
         return jdbc.query(sql, getFeedExtractor());
     }
@@ -131,20 +135,22 @@ public class ProblemRepo {
      * Fetches problems reported by a specific Citizen.
      */
     public List<ProblemFeedDTO> getProblemsByUserId(Long userId) {
-        String sql = "SELECT p.problem_id, p.title, p.description, p.status, p.hype_count, p.created_at, p.solver_id, " +
-                     "u.name AS author_name, " +
-                     "a.area_name, " +
-                     "sc.subcategory_name, " +
-                     "c.category_name, " +
-                     "pi.image_url " +
-                     "FROM problems p " +
-                     "LEFT JOIN users u ON p.user_id = u.user_id " +
-                     "LEFT JOIN areas a ON p.area_id = a.area_id " +
-                     "LEFT JOIN sub_categories sc ON p.subcategory_id = sc.subcategory_id " +
-                     "LEFT JOIN categories c ON sc.category_id = c.category_id " +
-                     "LEFT JOIN problem_images pi ON p.problem_id = pi.problem_id AND (pi.image_type IS NULL OR pi.image_type = 'before') " +
-                     "WHERE p.user_id = :userId " +
-                     "ORDER BY p.created_at DESC";
+        String sql = "SELECT p.problem_id, p.title, p.description, p.status, p.hype_count, p.created_at, p.solver_id, "
+                +
+                "u.name AS author_name, " +
+                "a.area_name, " +
+                "sc.subcategory_name, " +
+                "c.category_name, " +
+                "pi.image_url " +
+                "FROM problems p " +
+                "LEFT JOIN users u ON p.user_id = u.user_id " +
+                "LEFT JOIN areas a ON p.area_id = a.area_id " +
+                "LEFT JOIN sub_categories sc ON p.subcategory_id = sc.subcategory_id " +
+                "LEFT JOIN categories c ON sc.category_id = c.category_id " +
+                "LEFT JOIN problem_images pi ON p.problem_id = pi.problem_id AND (pi.image_type IS NULL OR pi.image_type = 'before') "
+                +
+                "WHERE p.user_id = :userId " +
+                "ORDER BY p.created_at DESC";
 
         MapSqlParameterSource params = new MapSqlParameterSource("userId", userId);
         return jdbc.query(sql, params, getFeedExtractor());
@@ -154,22 +160,24 @@ public class ProblemRepo {
      * Fetches problems currently assigned to a specific Solver (VMC/NGO/Noble).
      */
     public List<ProblemFeedDTO> getProblemsAssignedToUser(Long solverId) {
-        String sql = "SELECT p.problem_id, p.title, p.description, p.status, p.hype_count, p.created_at, p.solver_id, " +
-                     "u.name AS author_name, " +
-                     "a.area_name, " +
-                     "sc.subcategory_name, " +
-                     "c.category_name, " +
-                     "pi.image_url " +
-                     "FROM problem_history ph " +
-                     "JOIN problems p ON ph.problem_id = p.problem_id " +
-                     "LEFT JOIN users u ON p.user_id = u.user_id " +
-                     "LEFT JOIN areas a ON p.area_id = a.area_id " +
-                     "LEFT JOIN sub_categories sc ON p.subcategory_id = sc.subcategory_id " +
-                     "LEFT JOIN categories c ON sc.category_id = c.category_id " +
-                     "LEFT JOIN problem_images pi ON p.problem_id = pi.problem_id AND (pi.image_type IS NULL OR pi.image_type = 'before') " +
-                     "WHERE p.solver_id = :solverId " +
-                     "AND p.status IN ('IN_PROGRESS', 'RESOLVED') " +
-                     "ORDER BY p.created_at DESC";
+        String sql = "SELECT p.problem_id, p.title, p.description, p.status, p.hype_count, p.created_at, p.solver_id, "
+                +
+                "u.name AS author_name, " +
+                "a.area_name, " +
+                "sc.subcategory_name, " +
+                "c.category_name, " +
+                "pi.image_url " +
+                "FROM problem_history ph " +
+                "JOIN problems p ON ph.problem_id = p.problem_id " +
+                "LEFT JOIN users u ON p.user_id = u.user_id " +
+                "LEFT JOIN areas a ON p.area_id = a.area_id " +
+                "LEFT JOIN sub_categories sc ON p.subcategory_id = sc.subcategory_id " +
+                "LEFT JOIN categories c ON sc.category_id = c.category_id " +
+                "LEFT JOIN problem_images pi ON p.problem_id = pi.problem_id AND (pi.image_type IS NULL OR pi.image_type = 'before') "
+                +
+                "WHERE p.solver_id = :solverId " +
+                "AND p.status IN ('IN_PROGRESS', 'RESOLVED') " +
+                "ORDER BY p.created_at DESC";
 
         MapSqlParameterSource params = new MapSqlParameterSource("solverId", solverId);
         return jdbc.query(sql, params, getFeedExtractor());
@@ -184,14 +192,15 @@ public class ProblemRepo {
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("probId", probId)
                 .addValue("userId", userId);
-        
+
         Integer count = jdbc.queryForObject(sql, params, Integer.class);
         return count != null && count > 0;
     }
 
     /**
-     * Inserts a hype record. 
-     * Because of our DB trigger fn_update_hype_count(), this will automatically update problems.hype_count.
+     * Inserts a hype record.
+     * Because of our DB trigger fn_update_hype_count(), this will automatically
+     * update problems.hype_count.
      */
     public void addHype(Long probId, Long userId) {
         String sql = "INSERT INTO hype (problem_id, user_id) VALUES (:probId, :userId)";
@@ -235,5 +244,27 @@ public class ProblemRepo {
                 .addValue("citizenId", citizenId)
                 .addValue("status", status);
         jdbc.query(sql, params, rs -> null);
+    }
+
+    /**
+     * Unassigns a problem, setting it back to 'PENDING'.
+     */
+    public void unassignProblem(Long probId) {
+        String sql = "UPDATE problems SET solver_id = NULL, status = 'PENDING' WHERE problem_id = :probId";
+        MapSqlParameterSource params = new MapSqlParameterSource("probId", probId);
+        jdbc.update(sql, params);
+    }
+
+    /**
+     * Automatically unassigns problems that have been stuck in IN_PROGRESS for too
+     * long.
+     * Uses a conservative estimate based on the created_at timestamp if assigned_at
+     * is unavailable.
+     */
+    public int autoUnassignOverdueProblems() {
+        String sql = "UPDATE problems SET solver_id = NULL, status = 'PENDING' " +
+                "WHERE status = 'IN_PROGRESS' AND " +
+                "CURRENT_TIMESTAMP - created_at > INTERVAL '48 hours'";
+        return jdbc.update(sql, new MapSqlParameterSource());
     }
 }

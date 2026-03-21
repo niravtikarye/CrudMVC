@@ -1,6 +1,12 @@
 <%@tag description="Main Layout Tag" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@attribute name="pageTitle" required="false" type="java.lang.String" %>
 <%@attribute name="onload" required="false" type="java.lang.String" %>
+
+<c:if test="${empty requestScope.loggedInUser}">
+    <c:redirect url="/login" />
+</c:if>
+
 <!DOCTYPE html>
 <html>
     <head>

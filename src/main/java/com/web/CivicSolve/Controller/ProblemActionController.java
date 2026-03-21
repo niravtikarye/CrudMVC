@@ -74,4 +74,30 @@ public class ProblemActionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error assigning problem.");
         }
     }
+
+    /**
+     * Endpoint to Reject/Unassign a problem.
+     */
+    @PostMapping("/{probId}/unassign")
+    public ResponseEntity<String> unassignProblem(
+            @PathVariable Long probId,
+            HttpServletRequest request) {
+
+        try {
+            UserDTO loggedInUser = (UserDTO) request.getAttribute(JwtAuthFilter.USER_ATTR);
+            if (loggedInUser == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("You must be logged in to modify assignments.");
+            }
+            if ("citizen".equals(loggedInUser.getRole())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Citizens cannot modify assignments.");
+            }
+
+            problemService.unassignProblem(probId);
+            return ResponseEntity.ok("Problem rejected/unassigned successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error unassigning problem.");
+        }
+    }
 }

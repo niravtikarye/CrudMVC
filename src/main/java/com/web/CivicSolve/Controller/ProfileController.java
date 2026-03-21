@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class ProfileController {
@@ -31,19 +32,37 @@ public class ProfileController {
         ModelAndView mv = new ModelAndView("profile");
         mv.addObject("user", loggedInUser);
 
-        List<ProblemFeedDTO> problems;
-
         // Render different lists based on role
         if ("citizen".equals(loggedInUser.getRole())) {
-            problems = problemService.getProblemsByUserId(loggedInUser.getUserId());
+            List<ProblemFeedDTO> problems = problemService.getProblemsByUserId(loggedInUser.getUserId());
             mv.addObject("feedType", "My Reported Issues");
+            mv.addObject("problems", problems);
         } else {
             // Solver
-            problems = problemService.getProblemsAssignedToUser(loggedInUser.getUserId());
-            mv.addObject("feedType", "My Assigned Tasks");
+            mv.addObject("feedType", "Problem Dashboard");
+
+            // 1. Available Problems (All unassigned problems in feed)
+            List<ProblemFeedDTO> allFeed = problemService.getAllFeedProblems();
+            List<ProblemFeedDTO> availableProblems = allFeed.stream()
+                    .filter(p -> p.getSolverId() == null && "PENDING".equalsIgnoreCase(p.getStatus()))
+                    .collect(Collectors.toList());
+            mv.addObject("availableProblems", availableProblems);
+
+            // 2. Assigned Problems & Solved Problems
+            List<ProblemFeedDTO> assignedToUser = problemService.getProblemsAssignedToUser(loggedInUser.getUserId());
+
+            List<ProblemFeedDTO> assignedProblems = assignedToUser.stream()
+                    .filter(p -> "IN_PROGRESS".equalsIgnoreCase(p.getStatus()))
+                    .collect(Collectors.toList());
+
+            List<ProblemFeedDTO> solvedProblems = assignedToUser.stream()
+                    .filter(p -> "RESOLVED".equalsIgnoreCase(p.getStatus()))
+                    .collect(Collectors.toList());
+
+            mv.addObject("assignedProblems", assignedProblems);
+            mv.addObject("solvedProblems", solvedProblems);
         }
 
-        mv.addObject("problems", problems);
         return mv;
     }
 }
