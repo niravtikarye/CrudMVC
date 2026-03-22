@@ -1,17 +1,97 @@
+let currentCitizenImages = [];
+let currentCitizenIndex = 0;
+let activeProbId = null;
+let currentHypeCount = 0;
+
 function openProblemInfo(element) {
     // Get data from attributes
     const title = element.getAttribute('data-title');
     const desc = element.getAttribute('data-desc');
     const hipe = element.getAttribute('data-hipe');
     const status = element.getAttribute('data-status');
-    const image = element.getAttribute('data-image');
+    
+    // Arrays
+    const rawCitizen = element.getAttribute('data-citizen-images');
+    currentCitizenImages = rawCitizen ? rawCitizen.split('|||').filter(s => s.trim() !== '') : [];
+    const rawSolver = element.getAttribute('data-solver-images');
+    const solverImages = rawSolver ? rawSolver.split('|||').filter(s => s.trim() !== '') : [];
+    
+    // Auth & Meta
+    activeProbId = element.getAttribute('data-prob-id');
+    const problemUserId = element.getAttribute('data-user-id');
+    const problemSolverId = element.getAttribute('data-solver-id');
+    const loggedInId = window.USER_ID;
+    const loggedInRole = window.USER_ROLE;
 
     // Populate modal fields
     document.getElementById('pi-title').textContent = title;
     document.getElementById('pi-desc').textContent = desc;
-    document.getElementById('pi-hipe-val').textContent = hipe + ' Likes';
-    document.getElementById('pi-status-val').textContent = 'Status: ' + status;
-    document.getElementById('pi-image').src = image;
+    currentHypeCount = parseInt(hipe) || 0;
+    document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Likes';
+    document.getElementById('pi-status-text').textContent = 'Status: ' + status;
+
+    // Reset hype button appearance (optimistic reset, user may have hyped it, but backend knows)
+    const hypeBtn = document.getElementById('pi-btn-hype');
+    if (hypeBtn) {
+        hypeBtn.innerHTML = '<span class="btn-text">❤ Hype It!</span>';
+    }
+
+    // Slider Initialization
+    currentCitizenIndex = 0;
+    document.getElementById('pi-image').src = currentCitizenImages.length > 0 ? currentCitizenImages[0] : 'https://i.pinimg.com/736x/00/0d/9c/000d9c727330e506be6d8ee2497cde54.jpg';
+    
+    document.getElementById('pi-slider-prev').style.display = currentCitizenImages.length > 1 ? 'block' : 'none';
+    document.getElementById('pi-slider-next').style.display = currentCitizenImages.length > 1 ? 'block' : 'none';
+
+    // Right Panel Setup (Solver Image)
+    const rightPanel = document.getElementById('solverPanel');
+    const mobileBtn = document.getElementById('pi-btn-mobile-solver');
+    if (solverImages.length > 0) {
+        rightPanel.style.display = 'block';
+        mobileBtn.style.display = 'block';
+        document.getElementById('pi-solver-image').src = solverImages[0];
+    } else {
+        rightPanel.style.display = 'none';
+        mobileBtn.style.display = 'none';
+    }
+
+    // --- Dynamic Action Buttons ---
+    const solveBtn = document.getElementById('pi-btn-solve');
+    const rejectBtn = document.getElementById('pi-btn-reject');
+    const assignBtn = document.getElementById('pi-btn-assign');
+    const editBtn = document.getElementById('pi-btn-edit');
+    const deleteBtn = document.getElementById('pi-btn-delete');
+    const verifyGroup = document.getElementById('pi-verify-group');
+
+    // Reset visibility
+    [solveBtn, rejectBtn, assignBtn, editBtn, deleteBtn, verifyGroup].forEach(b => b.style.display = 'none');
+
+    // Only configure actions if logged in
+    if (loggedInId) {
+        if (loggedInRole !== 'citizen') {
+            // Unassigned -> Assign to me
+            if (!problemSolverId || problemSolverId === '0') {
+               assignBtn.style.display = 'block';
+            } 
+            // Assigned to me && IN_PROGRESS -> Solve / Reject
+            else if (status === 'IN_PROGRESS' && problemSolverId === loggedInId) {
+               solveBtn.style.display = 'block';
+               rejectBtn.style.display = 'block';
+            }
+        } 
+        else if (loggedInRole === 'citizen') {
+            // Creator Actions
+            if (problemUserId === loggedInId) {
+                editBtn.style.display = 'block';
+                deleteBtn.style.display = 'block';
+                
+                // Verify Actions
+                if (status === 'RESOLVED' || status === 'SOLVED') {
+                    verifyGroup.style.display = 'flex';
+                }
+            }
+        }
+    }
 
     // Show modal
     const modal = document.getElementById('problem-info-modal');
@@ -25,6 +105,122 @@ function openProblemInfo(element) {
     const newUrl = new URL(window.location);
     newUrl.searchParams.set('problem', encodeURIComponent(title));
     window.history.pushState({ modalOpen: true, title: title }, '', newUrl);
+}
+
+// SLIDER LOGIC
+function piPrevImage(e) {
+    if(e) e.stopPropagation();
+    if(currentCitizenImages.length <= 1) return;
+    currentCitizenIndex = (currentCitizenIndex - 1 + currentCitizenImages.length) % currentCitizenImages.length;
+    document.getElementById('pi-image').src = currentCitizenImages[currentCitizenIndex];
+}
+
+function piNextImage(e) {
+    if(e) e.stopPropagation();
+    if(currentCitizenImages.length <= 1) return;
+    currentCitizenIndex = (currentCitizenIndex + 1) % currentCitizenImages.length;
+    document.getElementById('pi-image').src = currentCitizenImages[currentCitizenIndex];
+}
+
+// ACTION WRAPPERS
+function actionToggleHype() {
+    if (!activeProbId) return;
+
+    if (!window.USER_ID) {
+        alert("You must be logged in to upvote.");
+        return;
+    }
+
+    const btn = document.getElementById('pi-btn-hype');
+    btn.disabled = true;
+
+    ajaxCall('POST', window.APP_CONTEXT + '/api/problems/' + activeProbId + '/hype', null, null, false, function(err, responseText) {
+        btn.disabled = false;
+        if (!err) {
+            if (responseText.includes("added")) {
+                currentHypeCount++;
+                document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Likes';
+                btn.innerHTML = '<span class="btn-text">💔 Un-Hype</span>';
+                updateFeedCardHypeCount(activeProbId, currentHypeCount);
+            } else if (responseText.includes("removed")) {
+                currentHypeCount = Math.max(0, currentHypeCount - 1);
+                document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Likes';
+                btn.innerHTML = '<span class="btn-text">❤ Hype It!</span>';
+                updateFeedCardHypeCount(activeProbId, currentHypeCount);
+            } else {
+                alert(responseText);
+            }
+        } else {
+            alert(responseText || "Failed to toggle hype.");
+        }
+    });
+}
+
+function updateFeedCardHypeCount(probId, count) {
+    const cards = document.querySelectorAll('.explore-card');
+    cards.forEach(card => {
+        if (card.getAttribute('data-prob-id') == probId) {
+            card.setAttribute('data-hipe', count);
+            const overlayContent = card.querySelector('.overlay-content span:first-child');
+            if (overlayContent) {
+                overlayContent.textContent = '❤ ' + count + '️ ';
+            }
+        }
+    });
+}
+
+function actionSolve() {
+    if (activeProbId) {
+        openSolveModal(activeProbId);
+        // Do NOT close the parent ProblemInfo modal, since the solve modal overlay is nested inside it!
+    }
+}
+function actionReject() {
+    if (activeProbId) {
+        rejectProblem(activeProbId);
+        closeProblemInfo();
+    }
+}
+function actionAssign() {
+    if (activeProbId) {
+        assignProblem(null, activeProbId);
+        closeProblemInfo();
+    }
+}
+function actionEdit() {
+    if (activeProbId) {
+        window.location.href = window.APP_CONTEXT + "/createProblem?editProbId=" + activeProbId;
+    }
+}
+function actionDelete() {
+    if (activeProbId) {
+        if(confirm("Are you sure you want to permanently delete this issue and all associated images?")) {
+            ajaxCall('POST', window.APP_CONTEXT + '/api/problems/' + activeProbId + '/delete', null, null, false, function(err, responseText) {
+                if(!err) {
+                    alert("Issue deleted successfully.");
+                    window.location.reload();
+                } else {
+                    alert("Failed to delete issue.");
+                }
+            });
+        }
+    }
+}
+function actionVerifyAccept() {
+    if (activeProbId) {
+        if (confirm("Are you sure this problem is fully resolved? It will be permanently marked as VERIFIED.")) {
+            verifyProblem(activeProbId, 'VERIFIED');
+            closeProblemInfo();
+        }
+    }
+}
+function actionVerifyReject() {
+    if (activeProbId) {
+        if (confirm("Are you sure this problem is not genuinely resolved? It will be REOPENED and sent back for further work.")) {
+            verifyProblem(activeProbId, 'REOPENED');
+            closeProblemInfo();
+        }
+    }
 }
 
 function closeProblemInfo(isFromHistory = false) {
@@ -66,14 +262,11 @@ function initExplore() {
                 // Here we call the logic directly to avoid pushState
                 document.getElementById('pi-title').textContent = card.getAttribute('data-title');
                 document.getElementById('pi-desc').textContent = card.getAttribute('data-desc');
-                document.getElementById('pi-hipe-val').textContent = card.getAttribute('data-hipe');
-                document.getElementById('pi-status-val').textContent = card.getAttribute('data-status');
-                document.getElementById('pi-image').src = card.getAttribute('data-image');
 
                 const modal = document.getElementById('problem-info-modal');
-                modal.style.display = 'flex';
-                setTimeout(() => { modal.classList.add('show'); }, 10);
-
+                // Use the main initializer function to reliably fire slider/logic
+                openProblemInfo(card);
+                
                 // Replace state so the initial load is recognized correctly
                 window.history.replaceState({ modalOpen: true, title: decodedTitle }, '', window.location.href);
                 break;

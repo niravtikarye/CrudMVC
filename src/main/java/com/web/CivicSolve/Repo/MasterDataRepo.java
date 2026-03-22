@@ -80,4 +80,24 @@ public class MasterDataRepo {
             }
         });
     }
+
+    public Long getOrganizationIdByName(String name) {
+        String sql = "SELECT organization_id FROM organizations WHERE organization_name = :name LIMIT 1";
+        MapSqlParameterSource params = new MapSqlParameterSource("name", name);
+        try {
+            return jdbc.queryForObject(sql, params, Long.class);
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    public Long createOrganization(Organization org) {
+        String sql = "INSERT INTO organizations (organization_name, address, contact_number) " +
+                     "VALUES (:name, :address, :contact) RETURNING organization_id";
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("name", org.getOrganizationName())
+                .addValue("address", org.getAddress())
+                .addValue("contact", org.getContactNumber());
+        return jdbc.queryForObject(sql, params, Long.class);
+    }
 }

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.IOException;
 
 @RestController
@@ -20,8 +19,6 @@ public class ResolutionController {
     @Autowired
     private ProblemService problemService;
 
-    private final String UPLOAD_DIR = "/tmp/civicsolve_uploads/";
-
     /**
      * Endpoint for a solver to mark a problem as RESOLVED by uploading an "After" image.
      */
@@ -29,6 +26,7 @@ public class ResolutionController {
     public ResponseEntity<String> solveProblem(
             @PathVariable Long probId,
             @RequestParam(value = "proofImage", required = false) MultipartFile proofImage,
+            @RequestParam(value = "description", required = false) String description,
             HttpServletRequest request) {
 
         try {
@@ -41,19 +39,15 @@ public class ResolutionController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Citizens cannot solve problems.");
             }
 
-            String savedImagePath = null;
+            String dataUri = null;
             if (proofImage != null && !proofImage.isEmpty()) {
-                File uploadDir = new File(UPLOAD_DIR);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdirs();
-                }
-                String filename = System.currentTimeMillis() + "_" + proofImage.getOriginalFilename();
-                File dest = new File(UPLOAD_DIR + filename);
-                proofImage.transferTo(dest);
-                savedImagePath = "/uploads/" + filename;
+                byte[] bytes = proofImage.getBytes();
+                String base64 = java.util.Base64.getEncoder().encodeToString(bytes);
+                String mimeType = proofImage.getContentType() != null ? proofImage.getContentType() : "image/jpeg";
+                dataUri = "data:" + mimeType + ";base64," + base64;
             }
 
-            problemService.markProblemSolved(probId, loggedInUser.getUserId(), savedImagePath);
+            problemService.markProblemSolved(probId, loggedInUser.getUserId(), dataUri, description);
             return ResponseEntity.ok("Problem marked as solved successfully.");
 
         } catch (IOException e) {
@@ -81,7 +75,7 @@ public class ResolutionController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You must be logged in.");
             }
 
-            problemService.verifyProblem(probId, loggedInUser.getUserId(), status);
+            problemService.verifyProblem(probId, status);
             return ResponseEntity.ok("Problem verification status updated.");
 
         } catch (Exception e) {

@@ -10,6 +10,8 @@
                         margin: 0 auto;
                         padding-bottom: 60px;
                     }
+                    
+                    @import url('${pageContext.request.contextPath}/resources/css/explore.css');
 
                     .profile-header {
                         display: flex;
@@ -53,12 +55,18 @@
                         color: var(--primary-color);
                     }
 
-                    /* Grid Layout instead of horizontal column */
+                    /* Grid Layout strictly 3 columns */
                     .cards-grid {
                         display: grid;
-                        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                        grid-template-columns: repeat(3, 1fr);
                         gap: 20px;
                         align-items: start;
+                    }
+                    @media (max-width: 1024px) {
+                        .cards-grid { grid-template-columns: repeat(2, 1fr); }
+                    }
+                    @media (max-width: 768px) {
+                        .cards-grid { grid-template-columns: 1fr; }
                     }
 
                     .tab-content {
@@ -100,28 +108,77 @@
 
                     <c:choose>
                         <c:when test="${user.role == 'citizen'}">
-                            <h2
-                                style="font-size: 1.2rem; margin-bottom: 15px; padding-left: 10px; border-left: 4px solid var(--primary-color);">
+                            <h2 style="font-size: 1.2rem; margin-bottom: 15px; padding-left: 10px; border-left: 4px solid var(--primary-color);">
                                 ${feedType}</h2>
-                            <div class="cards-grid">
-                                <c:choose>
-                                    <c:when test="${not empty problems}">
-                                        <c:forEach var="problem" items="${problems}">
-                                            <%@ include file="component/ProblemCard.jsp" %>
-                                        </c:forEach>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div class="empty-state">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
-                                                </path>
-                                            </svg>
-                                            <p>No issues found here yet.</p>
-                                        </div>
-                                    </c:otherwise>
-                                </c:choose>
+                            
+                            <!-- CITIZEN PROFILE TABS -->
+                            <div class="tabs-header">
+                                <button class="tab-btn active" onclick="switchProfileTab('tab-citizen-pending', this)">Pending Status</button>
+                                <button class="tab-btn" onclick="switchProfileTab('tab-citizen-assigned', this)">Assigned / In Progress</button>
+                                <button class="tab-btn" onclick="switchProfileTab('tab-citizen-solved', this)">Solved / Verified</button>
+                            </div>
+
+                            <!-- PENDING TAB -->
+                            <div id="tab-citizen-pending" class="tab-content active">
+                                <div class="cards-grid">
+                                    <c:choose>
+                                        <c:when test="${not empty pendingProblems}">
+                                            <c:forEach var="problem" items="${pendingProblems}">
+                                                <%@ include file="component/ExploreCard.jsp" %>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="empty-state">
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                <p>You have no pending issues.</p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                            </div>
+
+                            <!-- ASSIGNED TAB -->
+                            <div id="tab-citizen-assigned" class="tab-content">
+                                <div class="cards-grid">
+                                    <c:choose>
+                                        <c:when test="${not empty assignedProblems}">
+                                            <c:forEach var="problem" items="${assignedProblems}">
+                                                <%@ include file="component/ExploreCard.jsp" %>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="empty-state">
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                                </svg>
+                                                <p>None of your issues are currently being worked on.</p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                            </div>
+
+                            <!-- SOLVED TAB -->
+                            <div id="tab-citizen-solved" class="tab-content">
+                                <div class="cards-grid">
+                                    <c:choose>
+                                        <c:when test="${not empty solvedProblems}">
+                                            <c:forEach var="problem" items="${solvedProblems}">
+                                                <%@ include file="component/ExploreCard.jsp" %>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="empty-state">
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                <p>No issues have been fully resolved yet.</p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
                             </div>
                         </c:when>
 
@@ -142,7 +199,7 @@
                                     <c:choose>
                                         <c:when test="${not empty assignedProblems}">
                                             <c:forEach var="problem" items="${assignedProblems}">
-                                                <%@ include file="component/ProblemCard.jsp" %>
+                                                <%@ include file="component/ExploreCard.jsp" %>
                                             </c:forEach>
                                         </c:when>
                                         <c:otherwise>
@@ -167,7 +224,7 @@
                                     <c:choose>
                                         <c:when test="${not empty availableProblems}">
                                             <c:forEach var="problem" items="${availableProblems}">
-                                                <%@ include file="component/ProblemCard.jsp" %>
+                                                <%@ include file="component/ExploreCard.jsp" %>
                                             </c:forEach>
                                         </c:when>
                                         <c:otherwise>
@@ -190,7 +247,7 @@
                                     <c:choose>
                                         <c:when test="${not empty solvedProblems}">
                                             <c:forEach var="problem" items="${solvedProblems}">
-                                                <%@ include file="component/ProblemCard.jsp" %>
+                                                <%@ include file="component/ExploreCard.jsp" %>
                                             </c:forEach>
                                         </c:when>
                                         <c:otherwise>
@@ -224,4 +281,13 @@
                         el.classList.add('active');
                     }
                 </script>
+                
+                <!-- Problem Info Modal Container -->
+                <div id="problem-info-modal" class="modal-overlay" style="display: none;">
+                    <jsp:include page="component/ProblemInfo.jsp" />
+                </div>
+                
+                <!-- Load explore JS to power the modal -->
+                <script src="${pageContext.request.contextPath}/resources/js/explore.js"></script>
+
             </t:layout>

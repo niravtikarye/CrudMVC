@@ -1,9 +1,11 @@
 package com.web.CivicSolve.Controller;
 
 import com.web.CivicSolve.Model.UserDTO;
+import com.web.CivicSolve.Model.Organization;
 import com.web.CivicSolve.Service.AuthService;
 import com.web.CivicSolve.Service.JwtAuthFilter;
 import com.web.CivicSolve.Service.JwtUtil;
+import com.web.CivicSolve.Service.MasterDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,9 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private MasterDataService masterDataService;
+
     // -----------------------------------------------------------------------
     // POST /api/auth/register
     // -----------------------------------------------------------------------
@@ -42,9 +47,24 @@ public class AuthController {
             @RequestParam("email")    String email,
             @RequestParam("password") String password,
             @RequestParam("role")     String role,
-            @RequestParam(value = "organizationId", required = false) Long orgId) {
+            @RequestParam(value = "organizationId", required = false) Long orgId,
+            @RequestParam(value = "newOrganizationName", required = false) String newOrgName,
+            @RequestParam(value = "newOrganizationAddress", required = false) String newOrgAddress,
+            @RequestParam(value = "newOrganizationContact", required = false) String newOrgContact) {
 
         try {
+            if ("vmc".equals(role)) {
+                orgId = masterDataService.getOrganizationIdByName("VMC Official");
+            } else if ("ngo".equals(role)) {
+                if (orgId == null && newOrgName != null && !newOrgName.trim().isEmpty()) {
+                    Organization newOrg = new Organization();
+                    newOrg.setOrganizationName(newOrgName);
+                    newOrg.setAddress(newOrgAddress);
+                    newOrg.setContactNumber(newOrgContact);
+                    orgId = masterDataService.createOrganization(newOrg);
+                }
+            }
+
             UserDTO newUser = new UserDTO();
             newUser.setName(name);
             newUser.setUsername(username);

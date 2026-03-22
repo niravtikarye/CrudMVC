@@ -34,11 +34,11 @@ public class ProblemActionController {
             }
 
             Long userId = loggedInUser.getUserId();
-            boolean success = problemService.toggleHype(probId, userId);
-            if (success) {
+            String status = problemService.toggleHype(probId, userId);
+            if ("added".equals(status)) {
                 return ResponseEntity.ok("Hype added successfully.");
             } else {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("User has already hyped this problem.");
+                return ResponseEntity.ok("Hype removed successfully.");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,8 +53,7 @@ public class ProblemActionController {
     @PostMapping("/{probId}/assign")
     public ResponseEntity<String> assignProblem(
             @PathVariable Long probId,
-            @RequestParam Long solverId,
-            @RequestParam Long assignedBy,
+            @RequestParam Long solverId,          
             HttpServletRequest request) {
 
         try {
@@ -67,7 +66,7 @@ public class ProblemActionController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Citizens cannot assign or solve problems.");
             }
 
-            problemService.assignSolver(probId, solverId, assignedBy);
+            problemService.assignSolver(probId, solverId);
             return ResponseEntity.ok("Problem assigned successfully.");
         } catch (Exception e) {
             e.printStackTrace();

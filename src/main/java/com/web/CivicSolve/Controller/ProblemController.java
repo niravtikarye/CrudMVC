@@ -9,8 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.web.CivicSolve.Model.UserDTO;
+import com.web.CivicSolve.Service.JwtAuthFilter;
+import javax.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,6 +47,10 @@ public class ProblemController {
 
         System.out.println("Save Problem method is calling..........");
 
+        if (files != null && files.length > 5) {
+            return "error: Maximum 5 images allowed.";
+        }
+
         try {
             // Convert each uploaded image to a Base64 data URI and store as a string
             List<String> imageDataUris = new ArrayList<>();
@@ -58,8 +67,13 @@ public class ProblemController {
             }
 
             // Save to DB (image_url column now holds the full base64 data URI)
-            Long probId = problemService.reportNewProblem(problem, imageDataUris);
-            System.out.println("Problem Saved Successfully with ID: " + probId);
+            if (problem.getProbId() != null && problem.getProbId() > 0) {
+                problemService.updateProblem(problem, imageDataUris);
+                System.out.println("Problem Updated Successfully with ID: " + problem.getProbId());
+            } else {
+                Long probId = problemService.reportNewProblem(problem, imageDataUris);
+                System.out.println("Problem Saved Successfully with ID: " + probId);
+            }
 
             return "success";
 
@@ -69,6 +83,23 @@ public class ProblemController {
         } catch (Exception e) {
             e.printStackTrace();
             return "error: DB insertion failed";
+        }
+    }
+
+    @PostMapping("/api/problems/{probId}/delete")
+    @ResponseBody
+    public String deleteProblem(@PathVariable("probId") Long probId, HttpServletRequest request) {
+        try {
+            UserDTO loggedInUser = (UserDTO) request.getAttribute(JwtAuthFilter.USER_ATTR);
+            if (loggedInUser == null) {
+                return "error: Unauthorized access.";
+            }
+            
+            problemService.deleteProblem(probId, loggedInUser.getUserId());
+            return "success";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error: Failed to delete problem.";
         }
     }
 }

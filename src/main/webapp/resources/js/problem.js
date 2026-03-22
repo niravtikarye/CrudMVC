@@ -29,7 +29,7 @@ function hypeProblem(element, probId) {
 }
 
 function assignProblem(element, probId) {
-    if(element.classList.contains("assigned")) return; // Prevent re-assigning
+    if(element && element.classList && element.classList.contains("assigned")) return; // Prevent re-assigning
 
     const solverId = window.USER_ID;
     const role = window.USER_ROLE;
@@ -44,9 +44,8 @@ function assignProblem(element, probId) {
         alert("Citizens cannot assign problems. This action is reserved for Solvers.");
         return;
     }
-
-    const assignedBy = solverId; // solver is assigning to themselves
-    const url = window.APP_CONTEXT + '/api/problems/' + probId + '/assign?solverId=' + solverId + '&assignedBy=' + assignedBy;
+    
+    const url = window.APP_CONTEXT + '/api/problems/' + probId + '/assign?solverId=' + solverId ;
 
     ajaxCall('POST', url, null, null, false, function(err, responseText) {
         if (!err) {
@@ -58,9 +57,10 @@ function assignProblem(element, probId) {
     });
 }
 
-function solveProblem(event, probId) {
+function solveProblem(event, optionalProbId) {
     event.preventDefault();
-    const form = document.getElementById("solve-form-" + probId);
+    const form = event.target;
+    const probId = optionalProbId || form.getAttribute("data-probid");
     const formData = new FormData(form);
 
     const url = window.APP_CONTEXT + '/api/problems/' + probId + '/solve';
@@ -104,4 +104,74 @@ function rejectProblem(probId) {
             alert(responseText || "Failed to reject problem.");
         }
     });
+}
+
+// Dropdown toggle logic
+function toggleDropdown(dropdownId, event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById(dropdownId);
+    
+    // Close other open dropdowns first
+    document.querySelectorAll('.dropdown-content').forEach(el => {
+        if(el.id !== dropdownId) el.style.display = 'none';
+    });
+    
+    if (dropdown.style.display === "none" || dropdown.style.display === "") {
+        dropdown.style.display = "block";
+    } else {
+        dropdown.style.display = "none";
+    }
+}
+
+// Close dropdowns if clicked outside
+document.addEventListener("click", function(event) {
+    document.querySelectorAll('.dropdown-content').forEach(el => {
+        if (el.style.display === "block") {
+            el.style.display = "none";
+        }
+    });
+});
+
+function openSolveModal(probId) {
+    // Attempt local modal first for backward compatibility (dashboard ProblemCard)
+    let modal = document.getElementById("solve-modal-" + probId);
+    if(modal) {
+        modal.style.display = "flex";
+        setTimeout(() => modal.classList.add("show"), 10);
+        return;
+    }
+    // Otherwise open global overlay
+    modal = document.getElementById("solve-modal-global");
+    if(modal) {
+        document.getElementById("solve-form-global").setAttribute("data-probid", probId);
+        modal.style.display = "flex";
+        setTimeout(() => modal.classList.add("show"), 10);
+    }
+}
+
+function closeSolveModal(optionalProbId) {
+    if (optionalProbId) {
+        const localModal = document.getElementById("solve-modal-" + optionalProbId);
+        if(localModal) {
+            localModal.classList.remove("show");
+            setTimeout(() => localModal.style.display = "none", 300);
+        }
+    }
+    const globalModal = document.getElementById("solve-modal-global");
+    if(globalModal) {
+        globalModal.classList.remove("show");
+        setTimeout(() => globalModal.style.display = "none", 300);
+    }
+}
+
+// Placeholder for Creator UI Actions
+function editProblem(probId) {
+    alert("Edit problem feature coming soon! (ID: " + probId + ")");
+    // Hook up location.href = ... or ajax logic here
+}
+
+function deleteProblem(probId) {
+    if(!confirm("Are you sure you want to delete this problem?")) return;
+    alert("Delete problem API not yet implemented for ID: " + probId);
+    // Hook up ajaxCall to delete endpoint here
 }

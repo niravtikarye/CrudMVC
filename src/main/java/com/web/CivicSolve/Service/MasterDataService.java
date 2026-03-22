@@ -31,4 +31,12 @@ public class MasterDataService {
     public List<Organization> getAllOrganizations() {
         return masterDataRepo.getAllOrganizations();
     }
+
+    public Long getOrganizationIdByName(String name) {
+        return masterDataRepo.getOrganizationIdByName(name);
+    }
+
+    public Long createOrganization(Organization org) {
+        return masterDataRepo.createOrganization(org);
+    }
 }

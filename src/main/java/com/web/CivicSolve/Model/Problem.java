@@ -17,7 +17,8 @@ public class Problem {
     private String addressDescription;
 
     private String title;
-    private String description;
+    private String userDesc;
+    private String solverDesc;
     private String status;
     private String verificationRemark;
 
@@ -29,7 +30,7 @@ public class Problem {
 
     public Problem() {}
 
-    public Problem(Long probId, Long userId, Long solverId, Long subcategoryId, Long areaId, String addressDescription, String title, String description, String status, String verificationRemark, Integer hypeCount, List<ProblemImage> images) {
+    public Problem(Long probId, Long userId, Long solverId, Long subcategoryId, Long areaId, String addressDescription, String title, String userDesc, String solverDesc, String status, String verificationRemark, Integer hypeCount, List<ProblemImage> images) {
         this.probId = probId;
         this.userId = userId;
         this.solverId = solverId;
@@ -37,7 +38,8 @@ public class Problem {
         this.areaId = areaId;
         this.addressDescription = addressDescription;
         this.title = title;
-        this.description = description;
+        this.userDesc = userDesc;
+        this.solverDesc = solverDesc;
         this.status = status;
         this.verificationRemark = verificationRemark;
         this.hypeCount = hypeCount;
@@ -100,12 +102,20 @@ public class Problem {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getUserDesc() {
+        return userDesc;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setUserDesc(String userDesc) {
+        this.userDesc = userDesc;
+    }
+
+    public String getSolverDesc() {
+        return solverDesc;
+    }
+
+    public void setSolverDesc(String solverDesc) {
+        this.solverDesc = solverDesc;
     }
 
     public String getStatus() {

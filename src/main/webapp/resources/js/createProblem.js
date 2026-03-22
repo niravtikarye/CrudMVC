@@ -51,18 +51,80 @@ function updateHiddenInput() {
 
 function handleImageUploadChange(input) {
     const newFiles = Array.from(input.files);
+    let overflow = false;
 
     for (let file of newFiles) {
         if (selectedFiles.length < maxImages && file.type.startsWith('image/')) {
             selectedFiles.push(file);
+        } else if (selectedFiles.length >= maxImages) {
+            overflow = true;
         }
+    }
+    
+    if (overflow) {
+        alert("Maximum 5 images allowed; extra selections discarded.");
     }
 
     updateHiddenInput();
     renderGrid();
 }
 
+async function resolveImageToFile(url, idx) {
+    try {
+        if (url.startsWith('data:')) {
+            let arr = url.split(',');
+            let mime = 'image/jpeg';
+            let match = arr[0].match(/:(.*?);/);
+            if (match) mime = match[1];
+            let bstr = atob(arr[1]);
+            let n = bstr.length;
+            let u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new File([u8arr], "edited_image_" + idx + ".jpg", { type: mime });
+        } else {
+            let fetchUrl = url;
+            if (!fetchUrl.startsWith('http')) {
+                let prefix = window.APP_CONTEXT || '';
+                // prevent duplicated slashes
+                if (fetchUrl.startsWith('/')) {
+                    fetchUrl = fetchUrl.substring(1);
+                }
+                if (!prefix.endsWith('/')) {
+                    prefix += '/';
+                }
+                fetchUrl = prefix + fetchUrl;
+            }
+            const response = await fetch(fetchUrl);
+            const blob = await response.blob();
+            return new File([blob], "edited_image_" + idx + ".jpg", { type: blob.type || "image/jpeg" });
+        }
+    } catch(e) {
+        console.error("Failed to hydrate image:", e);
+        return null;
+    }
+}
+
 function initCreateProblem() {
+    // 0. Read Edit Configuration securely from DOM
+    const editConfigEl = document.getElementById('editConfig');
+    if (editConfigEl) {
+        window.EDIT_MODE = editConfigEl.getAttribute('data-mode') === 'true';
+        window.EDIT_AREA_ID = editConfigEl.getAttribute('data-area');
+        window.EDIT_CATEGORY_ID = editConfigEl.getAttribute('data-category');
+        window.EDIT_SUBCATEGORY_ID = editConfigEl.getAttribute('data-subcategory');
+    }
+
+    window.EDIT_CITIZEN_IMAGES = [];
+    const imgDataSpans = document.querySelectorAll('.citizen-img-data');
+    imgDataSpans.forEach(span => {
+        const text = span.textContent.trim();
+        if (text) {
+            window.EDIT_CITIZEN_IMAGES.push(text);
+        }
+    });
+
     // 1. Initialize Leaflet Map
     var map = L.map('map').setView([20.5937, 78.9629], 5);
 
@@ -102,8 +164,20 @@ function initCreateProblem() {
                 });
     });
 
-    // Initial render of empty boxes
-    renderGrid();
+    if (window.EDIT_MODE && window.EDIT_CITIZEN_IMAGES && window.EDIT_CITIZEN_IMAGES.length > 0) {
+        Promise.all(window.EDIT_CITIZEN_IMAGES.map((url, idx) => resolveImageToFile(url, idx)))
+            .then(files => {
+                files.forEach(f => {
+                    if (f && selectedFiles.length < maxImages) {
+                        selectedFiles.push(f);
+                    }
+                });
+                updateHiddenInput();
+                renderGrid();
+            });
+    } else {
+        renderGrid();
+    }
 
     // Fetch Areas
     ajaxCall('GET', window.APP_CONTEXT + '/api/master/areas', null, null, false, function (err, responseText) {
@@ -116,6 +190,13 @@ function initCreateProblem() {
                 option.textContent = area.areaName + ' (' + area.pincode + ')';
                 areaSelect.appendChild(option);
             });
+            if (window.EDIT_AREA_ID) {
+                Array.from(areaSelect.options).forEach(opt => {
+                    if (String(opt.value) === String(window.EDIT_AREA_ID)) {
+                        opt.selected = true;
+                    }
+                });
+            }
         } else {
             console.error("Error fetching Areas:", err);
         }
@@ -132,6 +213,14 @@ function initCreateProblem() {
                 option.textContent = cat.categoryName;
                 catSelect.appendChild(option);
             });
+            if (window.EDIT_CATEGORY_ID) {
+                Array.from(catSelect.options).forEach(opt => {
+                    if (String(opt.value) === String(window.EDIT_CATEGORY_ID)) {
+                        opt.selected = true;
+                    }
+                });
+                fetchSubCategories();
+            }
         } else {
             console.error("Error fetching Categories:", err);
         }
@@ -153,6 +242,13 @@ function fetchSubCategories() {
                 option.textContent = sub.subcategoryName;
                 subCatSelect.appendChild(option);
             });
+            if (window.EDIT_SUBCATEGORY_ID) {
+                Array.from(subCatSelect.options).forEach(opt => {
+                    if (String(opt.value) === String(window.EDIT_SUBCATEGORY_ID)) {
+                        opt.selected = true;
+                    }
+                });
+            }
         } else {
             console.error("Error fetching Subcategories:", err);
         }

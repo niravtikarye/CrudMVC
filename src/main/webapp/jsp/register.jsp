@@ -41,16 +41,31 @@
                 <option value="citizen" selected>Citizen (Report Problems)</option>
                 <option value="noble">Noble Volunteer (Solve Problems)</option>
                 <option value="ngo">NGO Member</option>
-                <option value="vmc">VMC Official</option>
+                <option value="vmc">VMC member</option>
             </select>
         </div>
 
-        <div id="organization-group" class="form-group">
+        <div id="organization-group" class="form-group" style="display: none;">
             <label for="organizationId">Select Organization</label>
-            <select id="organizationId" name="organizationId">
+            <select id="organizationId" name="organizationId" onchange="handleOrgSelectChange()">
                 <option value="" selected disabled>Select your organization...</option>
                 <!-- Populated dynamically via AJAX -->
             </select>
+        </div>
+
+        <div id="new-organization-group" style="display: none;">
+            <div class="form-group">
+                <label for="newOrganizationName">New Organization Name</label>
+                <input type="text" id="newOrganizationName" name="newOrganizationName" placeholder="Organization Name">
+            </div>
+            <div class="form-group">
+                <label for="newOrganizationAddress">Address</label>
+                <input type="text" id="newOrganizationAddress" name="newOrganizationAddress" placeholder="Address">
+            </div>
+            <div class="form-group">
+                <label for="newOrganizationContact">Contact Number</label>
+                <input type="text" id="newOrganizationContact" name="newOrganizationContact" placeholder="Contact Number">
+            </div>
         </div>
 
         <button type="submit" class="btn-submit">Create Account</button>
@@ -64,7 +79,7 @@
     window.APP_CONTEXT = '${pageContext.request.contextPath}';
 </script>
 <script src="${pageContext.request.contextPath}/resources/js/app.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/auth.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/auth.js?v=3"></script>
 
 </body>
 </html>

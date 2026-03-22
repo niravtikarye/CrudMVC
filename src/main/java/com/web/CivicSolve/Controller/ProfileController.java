@@ -35,8 +35,23 @@ public class ProfileController {
         // Render different lists based on role
         if ("citizen".equals(loggedInUser.getRole())) {
             List<ProblemFeedDTO> problems = problemService.getProblemsByUserId(loggedInUser.getUserId());
+            
+            List<ProblemFeedDTO> pendingProblems = problems.stream()
+                    .filter(p -> p.getSolverId() == null && ("OPEN".equalsIgnoreCase(p.getStatus()) || "REOPENED".equalsIgnoreCase(p.getStatus()) || p.getStatus() == null))
+                    .collect(Collectors.toList());
+
+            List<ProblemFeedDTO> assignedProblems = problems.stream()
+                    .filter(p -> "IN_PROGRESS".equalsIgnoreCase(p.getStatus()))
+                    .collect(Collectors.toList());
+
+            List<ProblemFeedDTO> solvedProblems = problems.stream()
+                    .filter(p -> "SOLVED".equalsIgnoreCase(p.getStatus()) || "RESOLVED".equalsIgnoreCase(p.getStatus()) || "VERIFIED".equalsIgnoreCase(p.getStatus()))
+                    .collect(Collectors.toList());
+
             mv.addObject("feedType", "My Reported Issues");
-            mv.addObject("problems", problems);
+            mv.addObject("pendingProblems", pendingProblems);
+            mv.addObject("assignedProblems", assignedProblems);
+            mv.addObject("solvedProblems", solvedProblems);
         } else {
             // Solver
             mv.addObject("feedType", "Problem Dashboard");
@@ -44,7 +59,7 @@ public class ProfileController {
             // 1. Available Problems (All unassigned problems in feed)
             List<ProblemFeedDTO> allFeed = problemService.getAllFeedProblems();
             List<ProblemFeedDTO> availableProblems = allFeed.stream()
-                    .filter(p -> p.getSolverId() == null && "PENDING".equalsIgnoreCase(p.getStatus()))
+                    .filter(p -> p.getSolverId() == null && ("OPEN".equalsIgnoreCase(p.getStatus()) || "REOPENED".equalsIgnoreCase(p.getStatus()) || p.getStatus() == null))
                     .collect(Collectors.toList());
             mv.addObject("availableProblems", availableProblems);
 
@@ -56,7 +71,7 @@ public class ProfileController {
                     .collect(Collectors.toList());
 
             List<ProblemFeedDTO> solvedProblems = assignedToUser.stream()
-                    .filter(p -> "RESOLVED".equalsIgnoreCase(p.getStatus()))
+                    .filter(p -> "SOLVED".equalsIgnoreCase(p.getStatus()) || "RESOLVED".equalsIgnoreCase(p.getStatus()) || "VERIFIED".equalsIgnoreCase(p.getStatus()))
                     .collect(Collectors.toList());
 
             mv.addObject("assignedProblems", assignedProblems);

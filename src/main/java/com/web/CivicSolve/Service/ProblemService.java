@@ -30,6 +30,28 @@ public class ProblemService {
         return problemRepo.getAllFeedProblems();
     }
 
+    public List<ProblemFeedDTO> getFilteredFeedProblems(Long areaId, Long categoryId, String status) {
+        return problemRepo.getFilteredFeedProblems(areaId, categoryId, status);
+    }
+
+    public ProblemFeedDTO getProblemById(Long probId) {
+        return problemRepo.getProblemById(probId);
+    }
+
+    public void updateProblem(Problem problem, List<String> imageUrls) {
+        problemRepo.updateProblem(problem);
+
+        if (imageUrls != null && !imageUrls.isEmpty()) {
+            // To prevent duplicates, purge previous citizen uploads before inserting new batch
+            problemRepo.deleteCitizenImages(problem.getProbId());
+            problemRepo.saveProblemImages(problem.getProbId(), imageUrls, "before");
+        }
+    }
+
+    public void deleteProblem(Long probId, Long userId) {
+        problemRepo.deleteProblem(probId, userId);
+    }
+
     public List<ProblemFeedDTO> getProblemsByUserId(Long userId) {
         return problemRepo.getProblemsByUserId(userId);
     }
@@ -39,32 +61,37 @@ public class ProblemService {
     }
 
     /**
-     * Toggles a hype for a user. Returns true if added, false if they already hyped
-     * it.
+     * Toggles a hype for a user. Returns "added" if it was added, "removed" if it had 
+     * already been hyped and is now removed.
      */
-    public boolean toggleHype(Long probId, Long userId) {
+    public String toggleHype(Long probId, Long userId) {
         if (problemRepo.checkUserHyped(probId, userId)) {
-            return false; // Already hyped
+            problemRepo.removeHype(probId, userId);
+            return "removed"; // Was hyped previously, so it gets unhyped
         }
         problemRepo.addHype(probId, userId);
-        return true; // Successfully added
+        return "added"; // Successfully added
     }
 
     /**
      * Assigns a problem solver to the task.
      */
-    public void assignSolver(Long probId, Long solverId, Long assignedBy) {
-        problemRepo.assignProblem(probId, solverId, assignedBy);
+    public void assignSolver(Long probId, Long solverId) {
+        problemRepo.assignProblem(probId, solverId);
     }
 
     /**
      * Marks a problem as solved and links the "After" image proof.
      */
-    public void markProblemSolved(Long probId, Long solverId, String imageUrl) {
-        problemRepo.markProblemSolved(probId, solverId);
+    public void markProblemSolved(Long probId, Long solverId, String imageUrl, String solverDesc) {
+        problemRepo.markProblemSolved(probId);
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
             problemRepo.saveProblemImages(probId, java.util.Collections.singletonList(imageUrl), "after");
+        }
+        
+        if (solverDesc != null && !solverDesc.trim().isEmpty()) {
+            problemRepo.updateSolverDescription(probId, solverDesc);
         }
     }
 
@@ -73,8 +100,9 @@ public class ProblemService {
      * 
      * @param status Must be 'VERIFIED' or 'RE_OPENED'
      */
-    public void verifyProblem(Long probId, Long authorId, String status) {
-        problemRepo.verifyProblem(probId, authorId, status);
+    public void verifyProblem(Long probId, String status) {
+        boolean status_bool = (status.equalsIgnoreCase("VERIFIED") ? true : false);        
+        problemRepo.verifyProblem(probId,  status_bool);        
     }
 
     /**
