@@ -11,6 +11,7 @@ public class ProblemFeedDTO {
     private String solverDesc;
     private String status;
     private Integer hypeCount;
+    private boolean isHypedByCurrentUser;
     private Timestamp createdAt;
 
     // Joined Fields for Display
@@ -48,6 +49,9 @@ public class ProblemFeedDTO {
 
     public Integer getHypeCount() { return hypeCount; }
     public void setHypeCount(Integer hypeCount) { this.hypeCount = hypeCount; }
+
+    public boolean isHypedByCurrentUser() { return isHypedByCurrentUser; }
+    public void setHypedByCurrentUser(boolean isHypedByCurrentUser) { this.isHypedByCurrentUser = isHypedByCurrentUser; }
 
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }

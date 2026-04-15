@@ -13,10 +13,7 @@
 
                     <ul class="menu">
                         <li class="nav-links">
-                            <span>🏠</span> <a href="${contextPath}/">Feed</a>
-                        </li>
-                        <li class="nav-links">
-                            <span>🔍</span> <a href="${contextPath}/explore">Explore</a>
+                            <span>🏠</span> <a href="${contextPath}/explore">Explore</a>
                         </li>
                         <c:if test="${requestScope.loggedInUser != null && requestScope.loggedInUser.role == 'citizen'}">
                             <li class="nav-links">
@@ -52,11 +49,8 @@
 
                 <!-- MOBILE SIDEBAR -->
                 <div class="mobile-bottom-nav">
-                    <a href="${contextPath}/" class="nav-item">
-                        <span>🏠</span>
-                    </a>
                     <a href="${contextPath}/explore" class="nav-item">
-                        <span>🔍</span>
+                        <span>🏠</span>
                     </a>
                     
                     <c:if test="${requestScope.loggedInUser != null && requestScope.loggedInUser.role == 'citizen'}">

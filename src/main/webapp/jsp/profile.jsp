@@ -288,6 +288,6 @@
                 </div>
                 
                 <!-- Load explore JS to power the modal -->
-                <script src="${pageContext.request.contextPath}/resources/js/explore.js"></script>
+                <script src="${pageContext.request.contextPath}/resources/js/explore.js?v=4"></script>
 
             </t:layout>

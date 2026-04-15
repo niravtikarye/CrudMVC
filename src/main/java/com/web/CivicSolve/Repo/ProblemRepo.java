@@ -17,11 +17,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import javax.servlet.http.HttpServletRequest;
+import com.web.CivicSolve.Model.UserDTO;
+import com.web.CivicSolve.Service.JwtAuthFilter;
+
 @Repository
 public class ProblemRepo {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbc;
+
+    private Long getCurrentUserId() {
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attr != null) {
+            HttpServletRequest request = attr.getRequest();
+            if (request != null) {
+                UserDTO user = (UserDTO) request.getAttribute(JwtAuthFilter.USER_ATTR);
+                if (user != null) {
+                    return user.getUserId();
+                }
+            }
+        }
+        return 0L; // 0L if no user is logged in
+    }
 
     /**
      * Inserts a new problem into the database and returns the generated problem_id.
@@ -143,6 +163,13 @@ public class ProblemRepo {
                         if (!rs.wasNull()) {
                             dto.setSolverId(sid);
                         }
+                        
+                        try {
+                            dto.setHypedByCurrentUser(rs.getBoolean("is_hyped_by_current"));
+                        } catch (SQLException e) {
+                            dto.setHypedByCurrentUser(false);
+                        }
+                        
                         map.put(probId, dto);
                     }
                     String imageUrl = rs.getString("image_url");
@@ -165,36 +192,39 @@ public class ProblemRepo {
      * images attached for the feed.
      */
     public List<ProblemFeedDTO> getAllFeedProblems() {
+        Long currentUserId = getCurrentUserId();
         String sql = "SELECT p.problem_id, p.user_id, p.title, p.user_desc, p.solver_desc, p.status, p.hype_count, p.created_at, p.solver_id, p.address_description, "
-                +
-                "u.name AS author_name, " +
+                + "u.name AS author_name, " +
                 "a.area_name, p.area_id, " +
                 "sc.subcategory_name, p.subcategory_id, " +
                 "c.category_name, sc.category_id, " +
-                "pi.image_url, pi.image_type " +
+                "pi.image_url, pi.image_type, " +
+                "EXISTS(SELECT 1 FROM hype h WHERE h.problem_id = p.problem_id AND h.user_id = :currentUserId) AS is_hyped_by_current " +
                 "FROM problems p " +
                 "LEFT JOIN users u ON p.user_id = u.user_id " +
                 "LEFT JOIN areas a ON p.area_id = a.area_id " +
                 "LEFT JOIN sub_categories sc ON p.subcategory_id = sc.subcategory_id " +
                 "LEFT JOIN categories c ON sc.category_id = c.category_id " +
                 "LEFT JOIN problem_images pi ON p.problem_id = pi.problem_id "
-                +
-                "ORDER BY p.created_at DESC";
+                + "ORDER BY p.created_at DESC";
 
-        return jdbc.query(sql, getFeedExtractor());
+        MapSqlParameterSource params = new MapSqlParameterSource("currentUserId", currentUserId);
+        return jdbc.query(sql, params, getFeedExtractor());
     }
 
     /**
      * Fetches problems filtered by Area, Category, and Status.
      */
     public List<ProblemFeedDTO> getFilteredFeedProblems(Long areaId, Long categoryId, String status) {
+        Long currentUserId = getCurrentUserId();
         StringBuilder sql = new StringBuilder(
                 "SELECT p.problem_id, p.user_id, p.title, p.user_desc, p.solver_desc, p.status, p.hype_count, p.created_at, p.solver_id, p.address_description, "
                 + "u.name AS author_name, "
                 + "a.area_name, p.area_id, "
                 + "sc.subcategory_name, p.subcategory_id, "
                 + "c.category_name, sc.category_id, "
-                + "pi.image_url, pi.image_type "
+                + "pi.image_url, pi.image_type, "
+                + "EXISTS(SELECT 1 FROM hype h WHERE h.problem_id = p.problem_id AND h.user_id = :currentUserId) AS is_hyped_by_current "
                 + "FROM problems p "
                 + "LEFT JOIN users u ON p.user_id = u.user_id "
                 + "LEFT JOIN areas a ON p.area_id = a.area_id "
@@ -203,7 +233,7 @@ public class ProblemRepo {
                 + "LEFT JOIN problem_images pi ON p.problem_id = pi.problem_id "
                 + "WHERE 1=1 ");
 
-        MapSqlParameterSource params = new MapSqlParameterSource();
+        MapSqlParameterSource params = new MapSqlParameterSource("currentUserId", currentUserId);
 
         if (areaId != null && areaId > 0) {
             sql.append(" AND p.area_id = :areaId ");
@@ -227,12 +257,14 @@ public class ProblemRepo {
      * Fetches a specific problem by ID securely mapping all feed constraints identically.
      */
     public ProblemFeedDTO getProblemById(Long probId) {
+        Long currentUserId = getCurrentUserId();
         String sql = "SELECT p.problem_id, p.user_id, p.title, p.user_desc, p.solver_desc, p.status, p.hype_count, p.created_at, p.solver_id, p.address_description, "
                 + "u.name AS author_name, " +
                 "a.area_name, p.area_id, " +
                 "sc.subcategory_name, p.subcategory_id, " +
                 "c.category_name, sc.category_id, " +
-                "pi.image_url, pi.image_type " +
+                "pi.image_url, pi.image_type, " +
+                "EXISTS(SELECT 1 FROM hype h WHERE h.problem_id = p.problem_id AND h.user_id = :currentUserId) AS is_hyped_by_current " +
                 "FROM problems p " +
                 "LEFT JOIN users u ON p.user_id = u.user_id " +
                 "LEFT JOIN areas a ON p.area_id = a.area_id " +
@@ -241,7 +273,8 @@ public class ProblemRepo {
                 "LEFT JOIN problem_images pi ON p.problem_id = pi.problem_id "
                 + "WHERE p.problem_id = :probId";
 
-        MapSqlParameterSource params = new MapSqlParameterSource("probId", probId);
+        MapSqlParameterSource params = new MapSqlParameterSource("probId", probId)
+                                                .addValue("currentUserId", currentUserId);
         List<ProblemFeedDTO> results = jdbc.query(sql, params, getFeedExtractor());
         return (results != null && !results.isEmpty()) ? results.get(0) : null;
     }
@@ -250,24 +283,25 @@ public class ProblemRepo {
      * Fetches problems reported by a specific Citizen.
      */
     public List<ProblemFeedDTO> getProblemsByUserId(Long userId) {
+        Long currentUserId = getCurrentUserId();
         String sql = "SELECT p.problem_id, p.user_id, p.title, p.user_desc, p.solver_desc, p.status, p.hype_count, p.created_at, p.solver_id, p.address_description, "
-                +
-                "u.name AS author_name, " +
+                + "u.name AS author_name, " +
                 "a.area_name, p.area_id, " +
                 "sc.subcategory_name, p.subcategory_id, " +
                 "c.category_name, sc.category_id, " +
-                "pi.image_url, pi.image_type " +
+                "pi.image_url, pi.image_type, " +
+                "EXISTS(SELECT 1 FROM hype h WHERE h.problem_id = p.problem_id AND h.user_id = :currentUserId) AS is_hyped_by_current " +
                 "FROM problems p " +
                 "LEFT JOIN users u ON p.user_id = u.user_id " +
                 "LEFT JOIN areas a ON p.area_id = a.area_id " +
                 "LEFT JOIN sub_categories sc ON p.subcategory_id = sc.subcategory_id " +
                 "LEFT JOIN categories c ON sc.category_id = c.category_id " +
                 "LEFT JOIN problem_images pi ON p.problem_id = pi.problem_id "
-                +
-                "WHERE p.user_id = :userId " +
+                + "WHERE p.user_id = :userId " +
                 "ORDER BY p.created_at DESC";
 
-        MapSqlParameterSource params = new MapSqlParameterSource("userId", userId);
+        MapSqlParameterSource params = new MapSqlParameterSource("userId", userId)
+                                                .addValue("currentUserId", currentUserId);
         return jdbc.query(sql, params, getFeedExtractor());
     }
 
@@ -275,13 +309,14 @@ public class ProblemRepo {
      * Fetches problems currently assigned to a specific Solver (VMC/NGO/Noble).
      */
     public List<ProblemFeedDTO> getProblemsAssignedToUser(Long solverId) {
+        Long currentUserId = getCurrentUserId();
         String sql = "SELECT p.problem_id, p.user_id, p.title, p.user_desc, p.solver_desc, p.status, p.hype_count, p.created_at, p.solver_id, p.address_description, "
-                +
-                "u.name AS author_name, " +
+                + "u.name AS author_name, " +
                 "a.area_name, p.area_id, " +
                 "sc.subcategory_name, p.subcategory_id, " +
                 "c.category_name, sc.category_id, " +
-                "pi.image_url, pi.image_type " +
+                "pi.image_url, pi.image_type, " +
+                "EXISTS(SELECT 1 FROM hype h WHERE h.problem_id = p.problem_id AND h.user_id = :currentUserId) AS is_hyped_by_current " +
                 "FROM problem_history ph " +
                 "JOIN problems p ON ph.problem_id = p.problem_id " +
                 "LEFT JOIN users u ON p.user_id = u.user_id " +
@@ -289,12 +324,12 @@ public class ProblemRepo {
                 "LEFT JOIN sub_categories sc ON p.subcategory_id = sc.subcategory_id " +
                 "LEFT JOIN categories c ON sc.category_id = c.category_id " +
                 "LEFT JOIN problem_images pi ON p.problem_id = pi.problem_id "
-                +
-                "WHERE p.solver_id = :solverId " +
+                + "WHERE p.solver_id = :solverId " +
                 "AND p.status IN ('IN_PROGRESS', 'RESOLVED', 'SOLVED', 'VERIFIED') " +
                 "ORDER BY p.created_at DESC";
 
-        MapSqlParameterSource params = new MapSqlParameterSource("solverId", solverId);
+        MapSqlParameterSource params = new MapSqlParameterSource("solverId", solverId)
+                                                .addValue("currentUserId", currentUserId);
         return jdbc.query(sql, params, getFeedExtractor());
     }
 

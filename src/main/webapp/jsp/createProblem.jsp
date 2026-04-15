@@ -75,8 +75,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="description">Detailed Description</label>
-                        <textarea id="description" name="description" rows="5"
+                        <label for="userDesc">Detailed Description</label>
+                        <textarea id="userDesc" name="userDesc" rows="5"
                                   placeholder="Provide more details about the problem here...">${editProblem != null ? editProblem.userDesc : ''}</textarea>
                     </div>
                 </div>

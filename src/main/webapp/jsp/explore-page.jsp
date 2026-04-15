@@ -44,5 +44,5 @@
         <jsp:include page="component/ProblemInfo.jsp" />
     </div>
 
-    <script src="${pageContext.request.contextPath}/resources/js/explore.js?v=2"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/explore.js?v=4"></script>
 </t:layout>

@@ -115,7 +115,7 @@ public class AuthController {
     // GET /api/auth/logout
     // -----------------------------------------------------------------------
     @GetMapping("/logout")
-    public ResponseEntity<String> logoutUser(HttpServletRequest request, HttpServletResponse response) {
+    public void logoutUser(HttpServletRequest request, HttpServletResponse response) throws java.io.IOException {
         // Overwrite the existing cookie with an expired one so the browser deletes it
         Cookie expired = new Cookie(JwtAuthFilter.COOKIE_NAME, "");
         expired.setMaxAge(0);          // tells browser to delete immediately
@@ -130,6 +130,6 @@ public class AuthController {
             session.invalidate();
         }
 
-        return ResponseEntity.ok("Logged out successfully.");
+        response.sendRedirect(request.getContextPath() + "/login");
     }
 }

@@ -9,6 +9,7 @@ function openProblemInfo(element) {
     const desc = element.getAttribute('data-desc');
     const hipe = element.getAttribute('data-hipe');
     const status = element.getAttribute('data-status');
+    const isHyped = element.getAttribute('data-is-hyped') === 'true';
     
     // Arrays
     const rawCitizen = element.getAttribute('data-citizen-images');
@@ -30,10 +31,14 @@ function openProblemInfo(element) {
     document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Likes';
     document.getElementById('pi-status-text').textContent = 'Status: ' + status;
 
-    // Reset hype button appearance (optimistic reset, user may have hyped it, but backend knows)
+    // Set hype button appearance accurately from the fetched state
     const hypeBtn = document.getElementById('pi-btn-hype');
     if (hypeBtn) {
-        hypeBtn.innerHTML = '<span class="btn-text">❤ Hype It!</span>';
+        if (isHyped) {
+            hypeBtn.innerHTML = '<span class="btn-text">💔 Un-Hype</span>';
+        } else {
+            hypeBtn.innerHTML = '<span class="btn-text">❤ Hype It!</span>';
+        }
     }
 
     // Slider Initialization
@@ -141,12 +146,12 @@ function actionToggleHype() {
                 currentHypeCount++;
                 document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Likes';
                 btn.innerHTML = '<span class="btn-text">💔 Un-Hype</span>';
-                updateFeedCardHypeCount(activeProbId, currentHypeCount);
+                updateFeedCardHypeCount(activeProbId, currentHypeCount, true);
             } else if (responseText.includes("removed")) {
                 currentHypeCount = Math.max(0, currentHypeCount - 1);
                 document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Likes';
                 btn.innerHTML = '<span class="btn-text">❤ Hype It!</span>';
-                updateFeedCardHypeCount(activeProbId, currentHypeCount);
+                updateFeedCardHypeCount(activeProbId, currentHypeCount, false);
             } else {
                 alert(responseText);
             }
@@ -156,11 +161,12 @@ function actionToggleHype() {
     });
 }
 
-function updateFeedCardHypeCount(probId, count) {
+function updateFeedCardHypeCount(probId, count, isHypedNow) {
     const cards = document.querySelectorAll('.explore-card');
     cards.forEach(card => {
         if (card.getAttribute('data-prob-id') == probId) {
             card.setAttribute('data-hipe', count);
+            card.setAttribute('data-is-hyped', isHypedNow ? 'true' : 'false');
             const overlayContent = card.querySelector('.overlay-content span:first-child');
             if (overlayContent) {
                 overlayContent.textContent = '❤ ' + count + '️ ';
