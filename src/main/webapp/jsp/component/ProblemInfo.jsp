@@ -24,9 +24,11 @@
                 </div>
 
                 <div class="uploader-profile-left">
-                    <div class="uploader-details" style="padding-left:15px;">
-                        <span class="upload-time" id="pi-status-text" style="font-size:14px; font-weight:bold; color:var(--primary-color);">Status: OPEN</span>
-                        <div style="font-size:13px; color:var(--text-secondary); margin-top:5px;" id="pi-hipe-val">0 Likes</div>
+                    <div class="uploader-details" style="padding-left:15px; width:100%; padding-right:15px;">
+                        <span class="upload-time" id="pi-status-text" style="font-size:14px; font-weight:bold; color:white;">Status: OPEN</span>
+                        <div style="font-size:13px; color:white; margin-top:5px;" id="pi-hipe-val">0 Hypes</div>
+                        <div style="font-size:13px; color:white; margin-top:5px; font-weight:500;" id="pi-area-val">📍 </div>
+                        <div style="font-size:12px; color:white; margin-top:2px; word-break:break-word;" id="pi-address-val"></div>
                     </div>
                 </div>
 
@@ -73,26 +75,22 @@
                 <!-- DESCRIPTION OVERLAY ON HOVER -->
                 <div class="problem-description-bottom" id="mobile-desc-panel">
                     <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-shrink: 0;">
-                        <h3 id="pi-title" style="margin-bottom: 0;">Problem Description</h3>
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 12px;flex-shrink: 0;">
+                        <h3 id="pi-title" style="margin-bottom: 0; color: #fff;">Problem Description</h3>
                         <button class="mobile-only" onclick="toggleDesc(event)"
                             style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 12px; padding: 4px 12px; font-size: 12px; font-weight: bold; cursor: pointer;">✕
                             Close</button>
                     </div>
 
                     <div class="desc-scroll-area" style="overflow-y: auto; flex: 1; padding-right: 8px;">
-                        <p class="description-text" id="pi-desc">
+                        <p class="description-text" id="pi-desc" style="color: rgba(255,255,255,0.95);">
                             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur soluta quas
                             dignissimos
                             officiis necessitatibus cumque ea ab quasi, distinctio quisquam sequi! A numquam, quia
                             dignissimos
                             porro velit eveniet consectetur ab?
                         </p>
-                        <div class="problem-tags">
-                            <span class="tag">Math</span>
-                            <span class="tag">Logic</span>
-                            <span class="tag">Urgent</span>
-                        </div>
+                       
                     </div>
                 </div>
             </div>
@@ -109,8 +107,9 @@
                         <h4 style="margin:0;">Resolution Proof</h4>
                     </div>
                     <div class="card-body solution-details" style="flex:1; display:flex; flex-direction:column; padding:0;">
-                        <div class="solution-thumbnail-wrapper" style="flex:1; height: 100%;">
-                            <img id="pi-solver-image" src="" alt="Solution Thumbnail" class="solution-img" style="height:100%; width:100%; object-fit:cover;">
+                        <div class="solution-thumbnail-wrapper" style="flex:1; display:flex; flex-direction:column; height: 100%;">
+                            <img id="pi-solver-image" src="" alt="Solution Thumbnail" class="solution-img" style="flex:1; width:100%; object-fit:cover; min-height: 0;">
+                            <p id="pi-solver-desc" style="display:none; font-size:13px; color:#333; padding: 10px; margin:0; background: #f8fafc; border-top: 1px solid #e2e8f0;"></p>
                         </div>
                     </div>
                 </div>

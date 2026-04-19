@@ -73,4 +73,25 @@ public class AuthService {
 
         return null; // Password mismatch
     }
+
+    /**
+     * Fetches a full UserDTO by user ID (useful when resolving JWT payload omissions)
+     */
+    public UserDTO getUserById(Long userId) {
+        Map<String, Object> dbUser = authRepo.getUserById(userId);
+        if(dbUser == null) return null;
+
+        UserDTO dto = new UserDTO();
+        dto.setUserId(((Number) dbUser.get("user_id")).longValue());
+        dto.setName((String) dbUser.get("name"));
+        dto.setUsername((String) dbUser.get("username"));
+        dto.setEmail((String) dbUser.get("email"));
+        dto.setRole((String) dbUser.get("role"));
+        
+        Object orgIdObj = dbUser.get("organization_id");
+        if (orgIdObj != null) {
+            dto.setOrganizationId(((Number) orgIdObj).longValue());
+        }
+        return dto;
+    }
 }

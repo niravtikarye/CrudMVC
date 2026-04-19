@@ -3,6 +3,7 @@
         <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
             <t:layout pageTitle="My Profile">
+                <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/explore.css">
                 <style>
                     .profile-container {
                         padding: 20px;
@@ -10,8 +11,6 @@
                         margin: 0 auto;
                         padding-bottom: 60px;
                     }
-                    
-                    @import url('${pageContext.request.contextPath}/resources/css/explore.css');
 
                     .profile-header {
                         display: flex;
@@ -288,6 +287,6 @@
                 </div>
                 
                 <!-- Load explore JS to power the modal -->
-                <script src="${pageContext.request.contextPath}/resources/js/explore.js?v=4"></script>
+                <script src="${pageContext.request.contextPath}/resources/js/explore.js?v=6"></script>
 
             </t:layout>

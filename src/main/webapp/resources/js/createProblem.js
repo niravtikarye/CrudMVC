@@ -125,44 +125,7 @@ function initCreateProblem() {
         }
     });
 
-    // 1. Initialize Leaflet Map
-    var map = L.map('map').setView([20.5937, 78.9629], 5);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    var marker;
-
-    // 2. Handle Map Clicks
-    map.on('click', function (e) {
-        var lat = e.latlng.lat;
-        var lng = e.latlng.lng;
-
-        // Set inputs
-        document.getElementById('latitude').value = lat.toFixed(6);
-        document.getElementById('longitude').value = lng.toFixed(6);
-
-        // Place or move marker
-        if (marker) {
-            marker.setLatLng(e.latlng);
-        } else {
-            marker = L.marker(e.latlng).addTo(map);
-        }
-
-        // 3. Optional: Reverse Geocoding (Getting rough address from Lat/Lng using Nominatim API)
-        fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.display_name) {
-                        document.getElementById('addressDescription').value = data.display_name;
-                    }
-                })
-                .catch(error => {
-                    console.error("Error fetching address:", error);
-                });
-    });
 
     if (window.EDIT_MODE && window.EDIT_CITIZEN_IMAGES && window.EDIT_CITIZEN_IMAGES.length > 0) {
         Promise.all(window.EDIT_CITIZEN_IMAGES.map((url, idx) => resolveImageToFile(url, idx)))

@@ -10,6 +10,9 @@ function openProblemInfo(element) {
     const hipe = element.getAttribute('data-hipe');
     const status = element.getAttribute('data-status');
     const isHyped = element.getAttribute('data-is-hyped') === 'true';
+    const areaName = element.getAttribute('data-area-name') || '';
+    const addressDesc = element.getAttribute('data-address') || '';
+    const solverDesc = element.getAttribute('data-solver-desc') || '';
     
     // Arrays
     const rawCitizen = element.getAttribute('data-citizen-images');
@@ -28,7 +31,14 @@ function openProblemInfo(element) {
     document.getElementById('pi-title').textContent = title;
     document.getElementById('pi-desc').textContent = desc;
     currentHypeCount = parseInt(hipe) || 0;
-    document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Likes';
+    document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Hypes';
+    
+    const areaValEl = document.getElementById('pi-area-val');
+    if(areaValEl) areaValEl.textContent = areaName ? ('📍 ' + areaName) : '';
+    
+    const addressValEl = document.getElementById('pi-address-val');
+    if(addressValEl) addressValEl.textContent = 'Address : '+addressDesc;
+
     document.getElementById('pi-status-text').textContent = 'Status: ' + status;
 
     // Set hype button appearance accurately from the fetched state
@@ -51,10 +61,27 @@ function openProblemInfo(element) {
     // Right Panel Setup (Solver Image)
     const rightPanel = document.getElementById('solverPanel');
     const mobileBtn = document.getElementById('pi-btn-mobile-solver');
-    if (solverImages.length > 0) {
-        rightPanel.style.display = 'block';
+    if (solverImages.length > 0 || (solverDesc && (status === 'RESOLVED' || status === 'VERIFIED'))) {
+        rightPanel.style.display = 'flex';
         mobileBtn.style.display = 'block';
-        document.getElementById('pi-solver-image').src = solverImages[0];
+        
+        const solverImgEl = document.getElementById('pi-solver-image');
+        if (solverImages.length > 0) {
+            solverImgEl.src = solverImages[0];
+            solverImgEl.style.display = 'block';
+        } else {
+            solverImgEl.style.display = 'none';
+        }
+        
+        const solverDescEl = document.getElementById('pi-solver-desc');
+        if (solverDescEl) {
+            if (solverDesc) {
+                solverDescEl.textContent = '✔️ ' + solverDesc;
+                solverDescEl.style.display = 'block';
+            } else {
+                solverDescEl.style.display = 'none';
+            }
+        }
     } else {
         rightPanel.style.display = 'none';
         mobileBtn.style.display = 'none';
@@ -144,12 +171,12 @@ function actionToggleHype() {
         if (!err) {
             if (responseText.includes("added")) {
                 currentHypeCount++;
-                document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Likes';
+                document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Hypes';
                 btn.innerHTML = '<span class="btn-text">💔 Un-Hype</span>';
                 updateFeedCardHypeCount(activeProbId, currentHypeCount, true);
             } else if (responseText.includes("removed")) {
                 currentHypeCount = Math.max(0, currentHypeCount - 1);
-                document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Likes';
+                document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Hypes';
                 btn.innerHTML = '<span class="btn-text">❤ Hype It!</span>';
                 updateFeedCardHypeCount(activeProbId, currentHypeCount, false);
             } else {

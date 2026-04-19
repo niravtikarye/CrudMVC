@@ -54,4 +54,19 @@ public class AuthRepo {
             return null;
         }
     }
+
+    /**
+     * Fetches a complete user row by ID.
+     * Returns null if the user doesn't exist.
+     */
+    public Map<String, Object> getUserById(Long userId) {
+        String sql = "SELECT * FROM users WHERE user_id = :userId LIMIT 1";
+        MapSqlParameterSource params = new MapSqlParameterSource().addValue("userId", userId);
+
+        try {
+            return jdbc.queryForMap(sql, params);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
 }

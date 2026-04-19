@@ -2,6 +2,7 @@ package com.web.CivicSolve.Controller;
 
 import com.web.CivicSolve.Model.ProblemFeedDTO;
 import com.web.CivicSolve.Model.UserDTO;
+import com.web.CivicSolve.Service.AuthService;
 import com.web.CivicSolve.Service.JwtAuthFilter;
 import com.web.CivicSolve.Service.ProblemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class ProfileController {
     @Autowired
     private ProblemService problemService;
 
+    @Autowired
+    private AuthService authService;
+
     @GetMapping("/profile")
     public ModelAndView showProfile(HttpServletRequest request) {
         // ✅ Read the user decoded from the JWT cookie by JwtAuthFilter
@@ -29,8 +33,14 @@ public class ProfileController {
             return new ModelAndView("redirect:/login");
         }
 
+        // Fetch full user details missing from JWT (like name, username)
+        UserDTO fullUser = authService.getUserById(loggedInUser.getUserId());
+        if (fullUser == null) {
+            return new ModelAndView("redirect:/login");
+        }
+
         ModelAndView mv = new ModelAndView("profile");
-        mv.addObject("user", loggedInUser);
+        mv.addObject("user", fullUser);
 
         // Render different lists based on role
         if ("citizen".equals(loggedInUser.getRole())) {
