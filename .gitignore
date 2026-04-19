@@ -1,1 +1,4 @@
 /target/
+
+# ── Secrets – never commit the real config file ──────────────
+src/main/resources/application.properties

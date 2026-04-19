@@ -3,19 +3,32 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/JavaScript.js to edit this template
  */
 
-function ajaxCall(method, url, data, destination, isHtml) {
+function ajaxCall(method, url, data, destination, isHtml, callback) {
     let xhttp = new XMLHttpRequest();
     xhttp.onload = function () {
-        if (this.readyState === 4 && this.status === 200) {
-            if (isHtml) {
-                document.getElementById(destination).innerHTML = this.responseText;
+        if (this.readyState === 4) {
+            if (this.status >= 200 && this.status < 300) {
+                if (destination && document.getElementById(destination)) {
+                    if (isHtml) {
+                        document.getElementById(destination).innerHTML = this.responseText;
+                    } else {
+                        document.getElementById(destination).value = this.responseText;
+                    }
+                }
+                if (callback) callback(null, this.responseText);
             } else {
-                document.getElementById(destination).value = this.responseText;
+                if (callback) callback(this.status, this.responseText);
             }
         }
     };
-    xhttp.open(method, url, false);
-    xhttp.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+    xhttp.open(method, url, true);
+    
+    // Only set the header if the data is NOT a FormData object 
+    // (FormData handles its own boundaries and Content-Type automatically)
+    if (data && !(data instanceof FormData)) {
+        xhttp.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+    }
+    
     xhttp.send(data);
 }
 
@@ -90,26 +103,30 @@ const form = document.getElementById('regForm');
 // Show/Hide solver type
 userTypeRadios.forEach(r => {
     r.addEventListener('change', () => {
-        if (r.value === "solver" && r.checked) {
-            solverDiv.style.display = "flex";
-            document.querySelectorAll('input[name="solver"]').forEach(s => s.required = true);
-        } else if (r.value === "user" && r.checked) {
-            solverDiv.style.display = "none";
-            document.querySelectorAll('input[name="solver"]').forEach(s => s.required = false);
+        if (solverDiv) {
+            if (r.value === "solver" && r.checked) {
+                solverDiv.style.display = "flex";
+                document.querySelectorAll('input[name="solver"]').forEach(s => s.required = true);
+            } else if (r.value === "user" && r.checked) {
+                solverDiv.style.display = "none";
+                document.querySelectorAll('input[name="solver"]').forEach(s => s.required = false);
+            }
         }
     });
 });
 
 // Password match validation
-form.addEventListener('submit', function (e) {
-    const pass = document.getElementById('pass').value;
-    const confirm = document.getElementById('confirmPass').value;
+if (form) {
+    form.addEventListener('submit', function (e) {
+        const pass = document.getElementById('pass');
+        const confirm = document.getElementById('confirmPass');
 
-    if (pass !== confirm) {
-        alert("Passwords do not match");
-        e.preventDefault();
-    }
-});
+        if (pass && confirm && pass.value !== confirm.value) {
+            alert("Passwords do not match");
+            e.preventDefault();
+        }
+    });
+}
 
 function goToRegeistration() {
 //    let con = confirm("Are you sure you want to delete this user?");

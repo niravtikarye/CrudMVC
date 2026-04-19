@@ -4,13 +4,12 @@
  */
 package com.web.crudmvc.service;
 
-import com.web.crudmvc.Database.Formbean.UserFormbean;
+import com.web.crudmvc.Formbean.UserFormbean;
 import com.web.crudmvc.repo.UserRepo;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 /**
  *
@@ -18,19 +17,19 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserService {
-    
-     @Autowired
+
+    @Autowired
     private UserRepo userRepo;
 
     // ============ VIEW ============
     public List<Map<String, Object>> getAllUsers() {
         return userRepo.showData();
     }
-    
+
     public Map<String, Object> findById(int userId) {
         return userRepo.findById(userId);
     }
-    
+
     // ============ INSERT ============
     public int saveUser(UserFormbean form) {
         return userRepo.insertData(form);

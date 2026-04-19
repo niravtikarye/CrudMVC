@@ -13,110 +13,57 @@
 
                     <ul class="menu">
                         <li class="nav-links">
-                            <span>📂</span> <a href="${contextPath}/">File Problem</a>
+                            <span>🏠</span> <a href="${contextPath}/explore">Explore</a>
                         </li>
-                        <li class="nav-links">
-                            <span>👥</span> <a href="${contextPath}/solver-list">Solver List</a>
-                        </li>
-                        <li class="nav-links">
-                            <span>⑧</span> <a href="${contextPath}/explore">Explore</a>
-                        </li>
-                        <li class="nav-links">
-                            <span>🔍</span> <a href="#">Search</a>
-                        </li>
-                        <li class="nav-links">
-                            <span>+</span> <a href="${contextPath}/createProblem">Create</a>
-                        </li>
+                        <c:if test="${requestScope.loggedInUser != null && requestScope.loggedInUser.role == 'citizen'}">
+                            <li class="nav-links">
+                                <span>➕</span> <a href="${contextPath}/createProblem">Create Issue</a>
+                            </li>
+                        </c:if>
+                        <c:if test="${requestScope.loggedInUser != null}">
+                            <li class="nav-links">
+                                <span>👤</span> <a href="${contextPath}/profile">My Profile</a>
+                            </li>
+                        </c:if>
                     </ul>
 
-                    <div class="bottom">
-                        <li style="list-style:none; padding: 15px 25px;">
-                            <span>⚙️</span> <a href="#"
-                                style="color:white; text-decoration:none; margin-left:15px;">Settings</a>
-                        </li>
+                    <div class="bottom" style="padding: 15px 25px;">
+                        <c:choose>
+                            <c:when test="${requestScope.loggedInUser != null}">
+                                <div style="display:flex; flex-direction:column; gap:10px;">
+                                    <span style="color:var(--text-secondary); font-size:0.85rem;">Logged in as ${requestScope.loggedInUser.name}</span>
+                                    <a href="${contextPath}/api/auth/logout" style="color:#ff4d4d; text-decoration:none; display:flex; align-items:center; gap:10px;">
+                                        <span>🚪</span> Logout
+                                    </a>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div style="display:flex; flex-direction:column; gap:10px;">
+                                    <a href="${contextPath}/login" style="color:var(--primary-color); text-decoration:none; font-weight:bold;">Login</a>
+                                    <a href="${contextPath}/register" style="color:white; text-decoration:none;">Register</a>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
 
                 <!-- MOBILE SIDEBAR -->
                 <div class="mobile-bottom-nav">
-                    <a href="${contextPath}/" class="nav-item">
+                    <a href="${contextPath}/explore" class="nav-item">
                         <span>🏠</span>
                     </a>
+                    
+                    <c:if test="${requestScope.loggedInUser != null && requestScope.loggedInUser.role == 'citizen'}">
+                        <a href="${contextPath}/createProblem" class="nav-item">
+                            <span>➕</span>
+                        </a>
+                    </c:if>
 
-                    <a href="${contextPath}/solver-list" class="nav-item">
-                        <span>👥</span>
-                    </a>
-
-                    <a href="${contextPath}/createProblem" class="nav-item">
-                        <span>➕</span>
-                    </a>
-                    <a href="${contextPath}/explore" class="nav-item">
-                        <span>🔍</span>
-                    </a>
-
-                    <a href="#" class="nav-item">
-                        <span>⚙️</span>
-                    </a>
+                    <c:if test="${requestScope.loggedInUser != null}">
+                        <a href="${contextPath}/profile" class="nav-item">
+                            <span>👤</span>
+                        </a>
+                    </c:if>
                 </div>
 
-                <script>
-                    document.addEventListener("DOMContentLoaded", function () {
-                        const currentUrl = window.location.pathname; // e.g. /CrudMVC/explore or /explore
-                        const contextPath = '${contextPath}';      // e.g. /CrudMVC or empty
-
-                        // Normalize current path by stripping contextPath if it exists so we just compare the route (e.g. "/" or "/explore")
-                        let route = currentUrl;
-                        if (contextPath && currentUrl.startsWith(contextPath)) {
-                            route = currentUrl.substring(contextPath.length);
-                        }
-                        if (route === '') route = '/';
-
-                        // Function to determine if a link matches the current route
-                        function isLinkActive(linkHref) {
-                            try {
-                                const linkPath = new URL(linkHref).pathname;
-
-                                let linkRoute = linkPath;
-                                if (contextPath && linkPath.startsWith(contextPath)) {
-                                    linkRoute = linkPath.substring(contextPath.length);
-                                }
-                                if (linkRoute === '') linkRoute = '/';
-
-                                // Exact match only for root "/" to prevent it lighting up constantly
-                                if (linkRoute === '/') {
-                                    return route === '/';
-                                }
-
-                                // For other routes, check if current route starts with it (e.g. /explore/123 starts with /explore)
-                                return route.startsWith(linkRoute);
-                            } catch (e) {
-                                return false;
-                            }
-                        }
-
-                        // Desktop Menu
-                        const menuLinks = document.querySelectorAll('.menu a');
-                        menuLinks.forEach(link => {
-                            // Skip empty or hash links like Search '#'
-                            if (link.getAttribute('href') === "#" || !link.getAttribute('href')) return;
-
-                            if (isLinkActive(link.href)) {
-                                link.closest('li').classList.add('active');
-                            } else {
-                                link.closest('li').classList.remove('active');
-                            }
-                        });
-
-                        // Mobile Menu
-                        const mobileLinks = document.querySelectorAll('.mobile-bottom-nav a');
-                        mobileLinks.forEach(link => {
-                            if (link.getAttribute('href') === "#" || !link.getAttribute('href')) return;
-
-                            if (isLinkActive(link.href)) {
-                                link.classList.add('active');
-                            } else {
-                                link.classList.remove('active');
-                            }
-                        });
-                    });
-                </script>
+                </div>

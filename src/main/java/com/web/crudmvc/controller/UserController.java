@@ -4,7 +4,7 @@
  */
 package com.web.crudmvc.controller;
 
-import com.web.crudmvc.Database.Formbean.UserFormbean;
+import com.web.crudmvc.Formbean.UserFormbean;
 import com.web.crudmvc.service.UserService;
 import java.util.List;
 import java.util.Map;
@@ -25,14 +25,14 @@ public class UserController {
     // ============ SHOW FORM ============
     @RequestMapping("/selectProcess")
     public ModelAndView showForm(@RequestParam("process") String process,
-        @RequestParam(value = "userId", required = false) Integer userId) {
+            @RequestParam(value = "userId", required = false) Integer userId) {
         ModelAndView mv = new ModelAndView("home");
         System.out.println("Hello");
         mv.addObject("process", process);
         if (process.equals("view")) {
             mv.addObject("data", service.getAllUsers());
-        } else if (process.equals("update")) {           
-            mv.addObject("user",service.findById(userId));
+        } else if (process.equals("update")) {
+            mv.addObject("user", service.findById(userId));
         }
         return mv;
     }

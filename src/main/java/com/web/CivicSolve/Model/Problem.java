@@ -1,63 +1,121 @@
 package com.web.CivicSolve.Model;
 
+import java.util.List;
+
 public class Problem {
-    private String type;
+    private Long probId;
+
+    // Actors
+    private Long userId; // Citizen
+    private Long solverId; // Assigned Worker (VMC/NGO/Noble)
+
+    // Classification
+    private Long subcategoryId;
+    
+    // Location
+    private Long areaId;
+    private String addressDescription;
+
     private String title;
-    private String description;
-    private String[] image;
-    private Integer hipe;
+    private String userDesc;
+    private String solverDesc;
     private String status;
+    private String verificationRemark;
 
-    public Problem() {
-    }
+    // Stats
+    private Integer hypeCount;
+    
+    // Associated Images
+    private List<ProblemImage> images; 
 
-    public Problem(String type, String title, String description, String[] image, Integer hipe, String status) {
-        this.type = type;
+    public Problem() {}
+
+    public Problem(Long probId, Long userId, Long solverId, Long subcategoryId, Long areaId, String addressDescription, String title, String userDesc, String solverDesc, String status, String verificationRemark, Integer hypeCount, List<ProblemImage> images) {
+        this.probId = probId;
+        this.userId = userId;
+        this.solverId = solverId;
+        this.subcategoryId = subcategoryId;
+        this.areaId = areaId;
+        this.addressDescription = addressDescription;
         this.title = title;
-        this.description = description;
-        this.image = image;
-        this.hipe = hipe;
+        this.userDesc = userDesc;
+        this.solverDesc = solverDesc;
         this.status = status;
+        this.verificationRemark = verificationRemark;
+        this.hypeCount = hypeCount;
+        this.images = images;
     }
 
-    public String getType() {
-        return this.type;
+    public Long getProbId() {
+        return probId;
+    }
+
+    public void setProbId(Long probId) {
+        this.probId = probId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getSolverId() {
+        return solverId;
+    }
+
+    public void setSolverId(Long solverId) {
+        this.solverId = solverId;
+    }
+
+    public Long getSubcategoryId() {
+        return subcategoryId;
+    }
+
+    public void setSubcategoryId(Long subcategoryId) {
+        this.subcategoryId = subcategoryId;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
+    }
+
+    public String getAddressDescription() {
+        return addressDescription;
+    }
+
+    public void setAddressDescription(String addressDescription) {
+        this.addressDescription = addressDescription;
     }
 
     public String getTitle() {
-        return this.title;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public String[] getImage() {
-        return this.image;
+        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public String getUserDesc() {
+        return userDesc;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setUserDesc(String userDesc) {
+        this.userDesc = userDesc;
     }
 
-    public void setImage(String[] image) {
-        this.image = image;
+    public String getSolverDesc() {
+        return solverDesc;
     }
 
-    public Integer getHipe() {
-        return hipe;
-    }
-
-    public void setHipe(Integer hipe) {
-        this.hipe = hipe;
+    public void setSolverDesc(String solverDesc) {
+        this.solverDesc = solverDesc;
     }
 
     public String getStatus() {
@@ -66,5 +124,29 @@ public class Problem {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getVerificationRemark() {
+        return verificationRemark;
+    }
+
+    public void setVerificationRemark(String verificationRemark) {
+        this.verificationRemark = verificationRemark;
+    }
+
+    public Integer getHypeCount() {
+        return hypeCount;
+    }
+
+    public void setHypeCount(Integer hypeCount) {
+        this.hypeCount = hypeCount;
+    }
+
+    public List<ProblemImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ProblemImage> images) {
+        this.images = images;
     }
 }

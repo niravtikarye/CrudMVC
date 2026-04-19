@@ -4,7 +4,6 @@
  */
 package com.web.crudmvc.repo;
 
-import com.web.crudmvc.Database.Formbean.UserFormbean;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +13,16 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import com.web.crudmvc.Formbean.UserFormbean;
+
 /**
  *
  * @author LENOVO
  */
 @Repository
 public class UserRepo {
-       
- @Autowired
+
+    @Autowired
     private NamedParameterJdbcTemplate jdbc;
 
     // ================= VIEW =================
@@ -33,14 +34,13 @@ public class UserRepo {
 
         return jdbc.queryForList(query.toString(), new MapSqlParameterSource());
     }
-    
+
     public Map<String, Object> findById(int userId) {
 
         StringBuilder query = new StringBuilder();
         query.append("SELECT user_id, uname, email, password, mobile, address ");
         query.append("FROM crud WHERE user_id = :userId");
-        MapSqlParameterSource params =
-                new MapSqlParameterSource("userId", userId);
+        MapSqlParameterSource params = new MapSqlParameterSource("userId", userId);
         return jdbc.queryForMap(query.toString(), params);
     }
 
