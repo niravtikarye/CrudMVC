@@ -24,11 +24,23 @@
                 </div>
 
                 <div class="uploader-profile-left">
-                    <div class="uploader-details" style="padding-left:15px; width:100%; padding-right:15px;">
-                        <span class="upload-time" id="pi-status-text" style="font-size:14px; font-weight:bold; color:white;">Status: OPEN</span>
-                        <div style="font-size:13px; color:white; margin-top:5px;" id="pi-hipe-val">0 Hypes</div>
-                        <div style="font-size:13px; color:white; margin-top:5px; font-weight:500;" id="pi-area-val">📍 </div>
-                        <div style="font-size:12px; color:white; margin-top:2px; word-break:break-word;" id="pi-address-val"></div>
+                    <div class="uploader-details" style="padding-left:0px; width:100%; display:flex; flex-direction:column; gap:12px;">
+                        <!-- Top Info Row -->
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="status-badge" id="pi-status-text" style="font-size:12px; padding:6px 12px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); border-radius:30px; font-weight:700; text-transform:uppercase;">OPEN</span>
+                            <div style="font-size:16px; font-weight:700; color:#ffedd5; text-shadow: 0 1px 2px rgba(0,0,0,0.5);" id="pi-hipe-val">
+                                🔥 0 Hypes
+                            </div>
+                        </div>
+                        <!-- Location Row -->
+                        <div style="display:flex; flex-direction:column; gap:6px; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                            <div style="font-size:15px; color:#f8fafc; font-weight:600; display:flex; align-items:center; gap:8px;">
+                                <span id="pi-area-val">Area</span>
+                            </div>
+                            <div style="font-size:13px; color:#cbd5e1; line-height:1.5; display:flex; align-items:flex-start; gap:8px;">
+                                <span id="pi-address-val">Address</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -73,17 +85,17 @@
                 </div>
 
                 <!-- DESCRIPTION OVERLAY ON HOVER -->
-                <div class="problem-description-bottom" id="mobile-desc-panel">
+                <div class="problem-description-bottom" id="mobile-desc-panel" style="padding-top:15px; border-top: 1px solid rgba(255,255,255,0.05); margin-top:10px;">
                     <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 12px;flex-shrink: 0;">
-                        <h3 id="pi-title" style="margin-bottom: 0; color: #fff;">Problem Description</h3>
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-shrink: 0;">
+                        <h3 id="pi-title" style="margin-bottom: 0; color: #ffffff; font-size: 18px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;">Problem Description</h3>
                         <button class="mobile-only" onclick="toggleDesc(event)"
                             style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 12px; padding: 4px 12px; font-size: 12px; font-weight: bold; cursor: pointer;">✕
                             Close</button>
                     </div>
 
                     <div class="desc-scroll-area" style="overflow-y: auto; flex: 1; padding-right: 8px;">
-                        <p class="description-text" id="pi-desc" style="color: rgba(255,255,255,0.95);">
+                        <p class="description-text" id="pi-desc" style="color: #cbd5e1; line-height:1.6; font-size: 14px;">
                             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur soluta quas
                             dignissimos
                             officiis necessitatibus cumque ea ab quasi, distinctio quisquam sequi! A numquam, quia

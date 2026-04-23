@@ -2,12 +2,12 @@
 
 function handleLogin(event) {
     event.preventDefault();
-    
+
     const form = document.getElementById('loginForm');
     const formData = new FormData(form);
     const params = new URLSearchParams(formData);
 
-    ajaxCall('POST', window.APP_CONTEXT + '/api/auth/login', params, null, false, function(err, responseText) {
+    ajaxCall('POST', window.APP_CONTEXT + '/api/auth/login', params, null, false, function (err, responseText) {
         if (!err) {
             window.location.href = window.APP_CONTEXT + '/';
         } else {
@@ -19,7 +19,7 @@ function handleLogin(event) {
 function initRegister() {
     const orgSelect = document.getElementById('organizationId');
     if (orgSelect) {
-        ajaxCall('GET', window.APP_CONTEXT + '/api/master/organizations', null, null, false, function(err, responseText) {
+        ajaxCall('GET', window.APP_CONTEXT + '/api/master/organizations', null, null, false, function (err, responseText) {
             if (!err) {
                 const data = JSON.parse(responseText);
                 data.forEach(org => {
@@ -29,7 +29,7 @@ function initRegister() {
                     option.textContent = org.organizationName;
                     orgSelect.appendChild(option);
                 });
-                
+
                 let newOption = document.createElement('option');
                 newOption.value = 'new';
                 newOption.textContent = '-- Add New Organization --';
@@ -47,7 +47,7 @@ function toggleOrganizationField() {
     const orgSelect = document.getElementById('organizationId');
     const newOrgGroup = document.getElementById('new-organization-group');
 
-    if (role === 'ngo') {
+    if (role === 'NGO Member') {
         orgGroup.style.display = 'block';
         orgSelect.required = true;
         handleOrgSelectChange();
@@ -78,9 +78,9 @@ function handleOrgSelectChange() {
 
 function handleRegister(event) {
     event.preventDefault();
-    
+
     const form = document.getElementById('registerForm');
-    
+
     const orgSelect = document.getElementById('organizationId');
     const wasNew = (orgSelect && orgSelect.value === 'new');
     if (wasNew) {
@@ -94,7 +94,7 @@ function handleRegister(event) {
         orgSelect.disabled = false;
     }
 
-    ajaxCall('POST', window.APP_CONTEXT + '/api/auth/register', params, null, false, function(err, responseText) {
+    ajaxCall('POST', window.APP_CONTEXT + '/api/auth/register', params, null, false, function (err, responseText) {
         if (!err) {
             alert("Registration successful! Please log in.");
             window.location.href = window.APP_CONTEXT + '/login';

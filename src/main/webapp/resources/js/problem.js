@@ -40,7 +40,7 @@ function assignProblem(element, probId) {
         return;
     }
 
-    if (role === 'citizen') {
+    if (role === 'Citizen') {
         alert("Citizens cannot assign problems. This action is reserved for Solvers.");
         return;
     }

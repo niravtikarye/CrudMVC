@@ -7,7 +7,7 @@
 
                 <div class="sidebar" id="sidebar">
                     <div class="sidebar-header">
-                        <h3 class="title">CORE</h3>
+                        <h3 class="title">Civic Solve</h3>
                         <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
                     </div>
 
@@ -15,7 +15,7 @@
                         <li class="nav-links">
                             <span>🏠</span> <a href="${contextPath}/explore">Explore</a>
                         </li>
-                        <c:if test="${requestScope.loggedInUser != null && requestScope.loggedInUser.role == 'citizen'}">
+                        <c:if test="${requestScope.loggedInUser != null && requestScope.loggedInUser.role == 'Citizen'}">
                             <li class="nav-links">
                                 <span>➕</span> <a href="${contextPath}/createProblem">Create Issue</a>
                             </li>
@@ -53,7 +53,7 @@
                         <span>🏠</span>
                     </a>
                     
-                    <c:if test="${requestScope.loggedInUser != null && requestScope.loggedInUser.role == 'citizen'}">
+                    <c:if test="${requestScope.loggedInUser != null && requestScope.loggedInUser.role == 'Citizen'}">
                         <a href="${contextPath}/createProblem" class="nav-item">
                             <span>➕</span>
                         </a>

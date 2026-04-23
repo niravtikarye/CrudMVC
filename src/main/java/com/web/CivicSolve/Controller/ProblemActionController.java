@@ -62,7 +62,7 @@ public class ProblemActionController {
             if (loggedInUser == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You must be logged in to assign problems.");
             }
-            if ("citizen".equals(loggedInUser.getRole())) {
+            if ("Citizen".equals(loggedInUser.getRole())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Citizens cannot assign or solve problems.");
             }
 
@@ -88,7 +88,7 @@ public class ProblemActionController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("You must be logged in to modify assignments.");
             }
-            if ("citizen".equals(loggedInUser.getRole())) {
+            if ("Citizen".equals(loggedInUser.getRole())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Citizens cannot modify assignments.");
             }
 

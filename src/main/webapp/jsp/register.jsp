@@ -38,10 +38,10 @@
         <div class="form-group">
             <label for="role">Account Type (Role)</label>
             <select id="role" name="role" required onchange="toggleOrganizationField()">
-                <option value="citizen" selected>Citizen (Report Problems)</option>
-                <option value="noble">Noble Volunteer (Solve Problems)</option>
-                <option value="ngo">NGO Member</option>
-                <option value="vmc">VMC member</option>
+                <option value="Citizen" selected>Citizen (Report Problems)</option>
+                <option value="Noble Person">Noble Volunteer (Solve Problems)</option>
+                <option value="NGO Member">NGO Member</option>
+                <option value="VMC Member">VMC member</option>
             </select>
         </div>
 

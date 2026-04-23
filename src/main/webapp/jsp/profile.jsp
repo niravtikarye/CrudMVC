@@ -106,7 +106,7 @@
                     </div>
 
                     <c:choose>
-                        <c:when test="${user.role == 'citizen'}">
+                        <c:when test="${user.role == 'Citizen'}">
                             <h2 style="font-size: 1.2rem; margin-bottom: 15px; padding-left: 10px; border-left: 4px solid var(--primary-color);">
                                 ${feedType}</h2>
                             

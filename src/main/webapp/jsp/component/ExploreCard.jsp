@@ -24,7 +24,8 @@
      data-is-hyped="${problem.hypedByCurrentUser}"
      data-area-name="${problem.areaName}"
      data-address="${fn:escapeXml(problem.addressDescription)}"
-     data-solver-desc="${fn:escapeXml(problem.solverDesc)}">
+     data-solver-desc="${fn:escapeXml(problem.solverDesc)}"
+     data-sub-category="${fn:escapeXml(problem.subcategoryName)}">
 
     <img src="${not empty problem.citizenImageUrls ? problem.citizenImageUrls[0] : 'https://i.pinimg.com/736x/00/0d/9c/000d9c727330e506be6d8ee2497cde54.jpg'}" alt="explore-img">
     <div class="explore-overlay">

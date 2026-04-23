@@ -35,7 +35,7 @@ public class ResolutionController {
             if (loggedInUser == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You must be logged in.");
             }
-            if ("citizen".equals(loggedInUser.getRole())) {
+            if ("Citizen".equals(loggedInUser.getRole())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Citizens cannot solve problems.");
             }
 

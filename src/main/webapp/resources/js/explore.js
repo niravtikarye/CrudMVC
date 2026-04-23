@@ -13,13 +13,14 @@ function openProblemInfo(element) {
     const areaName = element.getAttribute('data-area-name') || '';
     const addressDesc = element.getAttribute('data-address') || '';
     const solverDesc = element.getAttribute('data-solver-desc') || '';
-    
+    const subCategory = element.getAttribute('data-sub-category') || '';
+
     // Arrays
     const rawCitizen = element.getAttribute('data-citizen-images');
     currentCitizenImages = rawCitizen ? rawCitizen.split('|||').filter(s => s.trim() !== '') : [];
     const rawSolver = element.getAttribute('data-solver-images');
     const solverImages = rawSolver ? rawSolver.split('|||').filter(s => s.trim() !== '') : [];
-    
+
     // Auth & Meta
     activeProbId = element.getAttribute('data-prob-id');
     const problemUserId = element.getAttribute('data-user-id');
@@ -28,18 +29,18 @@ function openProblemInfo(element) {
     const loggedInRole = window.USER_ROLE;
 
     // Populate modal fields
-    document.getElementById('pi-title').textContent = title;
+    document.getElementById('pi-title').textContent = subCategory ? `${subCategory} : ${title}` : title;
     document.getElementById('pi-desc').textContent = desc;
     currentHypeCount = parseInt(hipe) || 0;
-    document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Hypes';
-    
-    const areaValEl = document.getElementById('pi-area-val');
-    if(areaValEl) areaValEl.textContent = areaName ? ('📍 ' + areaName) : '';
-    
-    const addressValEl = document.getElementById('pi-address-val');
-    if(addressValEl) addressValEl.textContent = 'Address : '+addressDesc;
+    document.getElementById('pi-hipe-val').textContent = `🔥 ${currentHypeCount} Hypes`;
 
-    document.getElementById('pi-status-text').textContent = 'Status: ' + status;
+    const areaValEl = document.getElementById('pi-area-val');
+    if (areaValEl) areaValEl.textContent = `📍 ${areaName}`;
+
+    const addressValEl = document.getElementById('pi-address-val');
+    if (addressValEl) addressValEl.textContent = `Address : ${addressDesc}`;
+
+    document.getElementById('pi-status-text').textContent = status;
 
     // Set hype button appearance accurately from the fetched state
     const hypeBtn = document.getElementById('pi-btn-hype');
@@ -54,7 +55,7 @@ function openProblemInfo(element) {
     // Slider Initialization
     currentCitizenIndex = 0;
     document.getElementById('pi-image').src = currentCitizenImages.length > 0 ? currentCitizenImages[0] : 'https://i.pinimg.com/736x/00/0d/9c/000d9c727330e506be6d8ee2497cde54.jpg';
-    
+
     document.getElementById('pi-slider-prev').style.display = currentCitizenImages.length > 1 ? 'block' : 'none';
     document.getElementById('pi-slider-next').style.display = currentCitizenImages.length > 1 ? 'block' : 'none';
 
@@ -64,7 +65,7 @@ function openProblemInfo(element) {
     if (solverImages.length > 0 || (solverDesc && (status === 'RESOLVED' || status === 'VERIFIED'))) {
         rightPanel.style.display = 'flex';
         mobileBtn.style.display = 'block';
-        
+
         const solverImgEl = document.getElementById('pi-solver-image');
         if (solverImages.length > 0) {
             solverImgEl.src = solverImages[0];
@@ -72,7 +73,7 @@ function openProblemInfo(element) {
         } else {
             solverImgEl.style.display = 'none';
         }
-        
+
         const solverDescEl = document.getElementById('pi-solver-desc');
         if (solverDescEl) {
             if (solverDesc) {
@@ -100,23 +101,25 @@ function openProblemInfo(element) {
 
     // Only configure actions if logged in
     if (loggedInId) {
-        if (loggedInRole !== 'citizen') {
+        if (loggedInRole !== 'Citizen') {
             // Unassigned -> Assign to me
             if (!problemSolverId || problemSolverId === '0') {
-               assignBtn.style.display = 'block';
-            } 
+                assignBtn.style.display = 'block';
+            }
             // Assigned to me && IN_PROGRESS -> Solve / Reject
             else if (status === 'IN_PROGRESS' && problemSolverId === loggedInId) {
-               solveBtn.style.display = 'block';
-               rejectBtn.style.display = 'block';
+                solveBtn.style.display = 'block';
+                rejectBtn.style.display = 'block';
             }
-        } 
-        else if (loggedInRole === 'citizen') {
+        }
+        else if (loggedInRole === 'Citizen') {
             // Creator Actions
             if (problemUserId === loggedInId) {
-                editBtn.style.display = 'block';
-                deleteBtn.style.display = 'block';
-                
+                if (status === 'OPEN' || status === 'REOPENED') {
+                    editBtn.style.display = 'block';
+                    deleteBtn.style.display = 'block';
+                }
+
                 // Verify Actions
                 if (status === 'RESOLVED' || status === 'SOLVED') {
                     verifyGroup.style.display = 'flex';
@@ -141,15 +144,15 @@ function openProblemInfo(element) {
 
 // SLIDER LOGIC
 function piPrevImage(e) {
-    if(e) e.stopPropagation();
-    if(currentCitizenImages.length <= 1) return;
+    if (e) e.stopPropagation();
+    if (currentCitizenImages.length <= 1) return;
     currentCitizenIndex = (currentCitizenIndex - 1 + currentCitizenImages.length) % currentCitizenImages.length;
     document.getElementById('pi-image').src = currentCitizenImages[currentCitizenIndex];
 }
 
 function piNextImage(e) {
-    if(e) e.stopPropagation();
-    if(currentCitizenImages.length <= 1) return;
+    if (e) e.stopPropagation();
+    if (currentCitizenImages.length <= 1) return;
     currentCitizenIndex = (currentCitizenIndex + 1) % currentCitizenImages.length;
     document.getElementById('pi-image').src = currentCitizenImages[currentCitizenIndex];
 }
@@ -166,17 +169,17 @@ function actionToggleHype() {
     const btn = document.getElementById('pi-btn-hype');
     btn.disabled = true;
 
-    ajaxCall('POST', window.APP_CONTEXT + '/api/problems/' + activeProbId + '/hype', null, null, false, function(err, responseText) {
+    ajaxCall('POST', window.APP_CONTEXT + '/api/problems/' + activeProbId + '/hype', null, null, false, function (err, responseText) {
         btn.disabled = false;
         if (!err) {
             if (responseText.includes("added")) {
                 currentHypeCount++;
-                document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Hypes';
+                document.getElementById('pi-hipe-val').textContent = `🔥 ${currentHypeCount} Hypes`;
                 btn.innerHTML = '<span class="btn-text">💔 Un-Hype</span>';
                 updateFeedCardHypeCount(activeProbId, currentHypeCount, true);
             } else if (responseText.includes("removed")) {
                 currentHypeCount = Math.max(0, currentHypeCount - 1);
-                document.getElementById('pi-hipe-val').textContent = currentHypeCount + ' Hypes';
+                document.getElementById('pi-hipe-val').textContent = `🔥 ${currentHypeCount} Hypes`;
                 btn.innerHTML = '<span class="btn-text">❤ Hype It!</span>';
                 updateFeedCardHypeCount(activeProbId, currentHypeCount, false);
             } else {
@@ -227,9 +230,9 @@ function actionEdit() {
 }
 function actionDelete() {
     if (activeProbId) {
-        if(confirm("Are you sure you want to permanently delete this issue and all associated images?")) {
-            ajaxCall('POST', window.APP_CONTEXT + '/api/problems/' + activeProbId + '/delete', null, null, false, function(err, responseText) {
-                if(!err) {
+        if (confirm("Are you sure you want to permanently delete this issue and all associated images?")) {
+            ajaxCall('POST', window.APP_CONTEXT + '/api/problems/' + activeProbId + '/delete', null, null, false, function (err, responseText) {
+                if (!err) {
                     alert("Issue deleted successfully.");
                     window.location.reload();
                 } else {
@@ -274,7 +277,7 @@ function closeProblemInfo(isFromHistory = false) {
 }
 
 // Handle Back Button natively via window
-window.onpopstate = function(event) {
+window.onpopstate = function (event) {
     if (!event.state || !event.state.modalOpen) {
         closeProblemInfo(true);
     }
@@ -299,7 +302,7 @@ function initExplore() {
                 const modal = document.getElementById('problem-info-modal');
                 // Use the main initializer function to reliably fire slider/logic
                 openProblemInfo(card);
-                
+
                 // Replace state so the initial load is recognized correctly
                 window.history.replaceState({ modalOpen: true, title: decodedTitle }, '', window.location.href);
                 break;
@@ -326,7 +329,7 @@ function toggleDesc(event) {
     if (event) {
         event.stopPropagation();
     }
-    console.log("event : ",event);
+    console.log("event : ", event);
     const leftPanel = document.querySelector('.problem-left');
     if (leftPanel) {
         leftPanel.classList.toggle('show-desc');

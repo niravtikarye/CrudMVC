@@ -53,9 +53,9 @@ public class AuthController {
             @RequestParam(value = "newOrganizationContact", required = false) String newOrgContact) {
 
         try {
-            if ("vmc".equals(role)) {
+            if ("VMC Member".equals(role)) {
                 orgId = masterDataService.getOrganizationIdByName("VMC Official");
-            } else if ("ngo".equals(role)) {
+            } else if ("NGO Member".equals(role)) {
                 if (orgId == null && newOrgName != null && !newOrgName.trim().isEmpty()) {
                     Organization newOrg = new Organization();
                     newOrg.setOrganizationName(newOrgName);

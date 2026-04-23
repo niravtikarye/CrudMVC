@@ -43,11 +43,11 @@ public class ProfileController {
         mv.addObject("user", fullUser);
 
         // Render different lists based on role
-        if ("citizen".equals(loggedInUser.getRole())) {
+        if ("Citizen".equals(loggedInUser.getRole())) {
             List<ProblemFeedDTO> problems = problemService.getProblemsByUserId(loggedInUser.getUserId());
             
             List<ProblemFeedDTO> pendingProblems = problems.stream()
-                    .filter(p -> p.getSolverId() == null && ("OPEN".equalsIgnoreCase(p.getStatus()) || "REOPENED".equalsIgnoreCase(p.getStatus()) || p.getStatus() == null))
+                    .filter(p -> (p.getSolverId() == null || p.getSolverId() == 0L) && ("OPEN".equalsIgnoreCase(p.getStatus()) || "REOPENED".equalsIgnoreCase(p.getStatus()) || "PENDING".equalsIgnoreCase(p.getStatus()) || p.getStatus() == null))
                     .collect(Collectors.toList());
 
             List<ProblemFeedDTO> assignedProblems = problems.stream()
@@ -69,7 +69,7 @@ public class ProfileController {
             // 1. Available Problems (All unassigned problems in feed)
             List<ProblemFeedDTO> allFeed = problemService.getAllFeedProblems();
             List<ProblemFeedDTO> availableProblems = allFeed.stream()
-                    .filter(p -> p.getSolverId() == null && ("OPEN".equalsIgnoreCase(p.getStatus()) || "REOPENED".equalsIgnoreCase(p.getStatus()) || p.getStatus() == null))
+                    .filter(p -> (p.getSolverId() == null || p.getSolverId() == 0L) && ("OPEN".equalsIgnoreCase(p.getStatus()) || "REOPENED".equalsIgnoreCase(p.getStatus()) || "PENDING".equalsIgnoreCase(p.getStatus()) || p.getStatus() == null))
                     .collect(Collectors.toList());
             mv.addObject("availableProblems", availableProblems);
 
