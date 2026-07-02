@@ -1,4 +1,4 @@
-# CivicSolve (CrudMVC)
+# CivicSolve
 
 CivicSolve is a community-driven civic issue management system. It allows citizens to report problems, explore active issues, and engage with community-driven solutions in a specific geographical area (Vadodara). The platform features robust user authentication, role-based access control, map integration, and an engaging "Hypes" system to track issue popularity.
 
@@ -32,7 +32,7 @@ CivicSolve is a community-driven civic issue management system. It allows citize
 1. **Clone the repository:**
    ```bash
    git clone <repository-url>
-   cd CrudMVC
+   cd CivicSolve
    ```
 
 2. **Configure Database:**
@@ -44,10 +44,10 @@ CivicSolve is a community-driven civic issue management system. It allows citize
    ```
 
 4. **Deploy:**
-   Deploy the generated `CrudMVC-1.0-SNAPSHOT.war` (found in the `target/` directory) to your Apache Tomcat server.
+   Deploy the generated `CivicSolve-1.0-SNAPSHOT.war` (found in the `target/` directory) to your Apache Tomcat server.
 
 5. **Run:**
-   Start Tomcat and access the application via your browser at `http://localhost:8080/CrudMVC`.
+   Start Tomcat and access the application via your browser at `http://localhost:8080/CivicSolve`.
 
 ## Docker (Optional)
 
